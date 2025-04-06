@@ -54,13 +54,11 @@ struct ContentView: View {
 	private func performSearch() {
 		// Get the user's home directory
 		let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
-		print(homeDirectory)
-		
 		// Perform the search in the Desktop directory
 		searchManager.searchForFolders(inDirectory: homeDirectory, matching: folderName) { results in
 			DispatchQueue.main.async {
 				if !results.isEmpty {
-
+					
 					searchResults = results
 				}
 			}

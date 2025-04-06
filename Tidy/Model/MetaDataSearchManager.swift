@@ -37,8 +37,13 @@ class MetadataSearchManager {
 			metadataQuery?.stop()
 		}
 		
-		// Configure the search scope (where to look)
-		metadataQuery?.searchScopes = [directory.path]
+		// Get all non-hidden subdirectories
+		let searchPaths = getAllNonHiddenSubdirectories(of: directory)
+		
+		print("Searching in \(searchPaths.count) directories")
+		
+		// Configure the search scope with all subdirectories
+		metadataQuery?.searchScopes = searchPaths
 		
 		// Set up the search criteria using NSPredicate
 		let predicate = NSPredicate(format: "kMDItemContentTypeTree == 'public.folder' AND kMDItemDisplayName CONTAINS[cd] %@", searchString)
@@ -52,6 +57,32 @@ class MetadataSearchManager {
 		
 		// Start the search
 		metadataQuery?.start()
+	}
+
+	// Helper function to get all non-hidden subdirectories
+	private func getAllNonHiddenSubdirectories(of directory: URL) -> [String] {
+		let fileManager = FileManager.default
+		var directoryPaths = [directory.path] // Include the starting directory itself
+		
+		do {
+			// Get all items in the directory, skipping hidden files
+			let contents = try fileManager.contentsOfDirectory(at: directory,
+														   includingPropertiesForKeys: [.isDirectoryKey],
+														   options: [.skipsHiddenFiles])
+			
+			// Filter to only include directories
+			for url in contents {
+				var isDirectory: ObjCBool = false
+				if fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory) && isDirectory.boolValue {
+					directoryPaths.append(url.path)
+				}
+			}
+			
+		} catch {
+			print("Error getting subdirectories: \(error)")
+		}
+		
+		return directoryPaths
 	}
 	
 	// This method is called when the search completes

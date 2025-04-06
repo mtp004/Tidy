@@ -1,38 +1,15 @@
 # Changelog
 
-## [0.1.0] - Initial Project Setup
+## [Unreleased]
 
-### Project Overview
-- Project Name: Tidy
-- Platform: macOS
-- Development Start Date: March 27, 2025
-- Initial Purpose: File and Folder Management Utility
+### Changed
+- **Expanded Search Scope:** `MetadataSearchManager` now includes all non-hidden subdirectories of the target directory when performing folder searches, rather than just the root directory itself.
+  - Added helper method `getAllNonHiddenSubdirectories(of:)` to recursively collect search paths.
+  - Replaced single-directory `searchScopes` assignment with a full list of subdirectories.
 
-### Features Implemented
-- Basic search interface for finding files/folders
-- User input field for filename/folder name
-- Dynamic search result display
-- Search button with input validation
+### Removed
+- Removed unnecessary debug print statement from `ContentView` that printed the user's home directory.
 
-### User Interface
-- Minimal, clean interface with centered layout
-- Responsive design with flexible frame sizing
-- Conditional text rendering based on user input
-- Accessibility considerations with clear text fields and buttons
+### Fixed
+- Improved search reliability by ensuring important directories like `~/Desktop` are not skipped when the user selects a higher-level folder like their Home directory.
 
-### Technical Foundations
-- Developed using SwiftUI
-- Implemented state management with  properties
-- Reactive UI updates based on user interactions
-- Built-in input validation and dynamic content display
-
-### Future Roadmap
-- Implement actual file search functionality
-- Add file system integration
-- Develop more advanced search filters
-- Create detailed file/folder preview capabilities
-
-### Development Notes
-- Focused on incremental, step-by-step development
-- Prioritizing clean, readable code structure
-- Emphasis on user experience and interface responsiveness
