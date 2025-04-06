@@ -2,7 +2,7 @@ import SwiftUI
 
 struct ContentView: View {
 	@State private var folderName: String = ""
-	@State private var searchResults: [String] = []  // ✅ Store multiple results as an array
+	@State private var searchResults: [FolderEntry] = []  // ✅ Store multiple results as an array
 	private let searchManager = MetadataSearchManager()  // Instance of search manager
 	
 	var body: some View {
@@ -19,15 +19,12 @@ struct ContentView: View {
 					}
 				
 				Button("Search") {
-					searchResults = ["Searching for \(folderName)..."]
 					performSearch()
 				}
 				.disabled(folderName.isEmpty)
 				
 				Spacer()
 			}
-			
-			Spacer()
 			
 			if searchResults.isEmpty {
 				Text("Results will display here")
@@ -36,22 +33,22 @@ struct ContentView: View {
 				ScrollView {
 					VStack(alignment: .leading, spacing: 8) {
 						// ✅ FIX: Use `.self` as an identifier
-						ForEach(searchResults, id: \.self) { result in
-							Text(result)
-								.frame(maxWidth: .infinity, alignment: .leading)
-								.padding(.horizontal)
+						ForEach(searchResults, id: \.path) { entry in
+							FolderEntryView(entry: entry)
 						}
 					}
 					.padding(.vertical)
 				}
-				.frame(maxHeight: 150)  // Limit scrollable height
-				.border(Color.gray, width: 1) // Add border for visibility
+				.frame(maxWidth: .infinity, maxHeight: .infinity)  // Limit scrollable height
+				.background(Color(NSColor.controlBackgroundColor))
+				.clipShape(RoundedRectangle(cornerRadius: 8))
+				.padding(5)
 			}
 			
 			Spacer()
 		}
 		.frame(minWidth: 300, minHeight: 200)
-		.padding()
+		.padding(5)
 	}
 	
 	private func performSearch() {
@@ -59,14 +56,11 @@ struct ContentView: View {
 		let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
 		print(homeDirectory)
 		
-		// Get the Desktop directory
-		
 		// Perform the search in the Desktop directory
 		searchManager.searchForFolders(inDirectory: homeDirectory, matching: folderName) { results in
 			DispatchQueue.main.async {
-				if results.isEmpty {
-					searchResults = ["No matching folders found."]
-				} else {
+				if !results.isEmpty {
+
 					searchResults = results
 				}
 			}

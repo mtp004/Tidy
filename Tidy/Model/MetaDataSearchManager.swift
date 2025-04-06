@@ -7,7 +7,7 @@ class MetadataSearchManager {
 	private var metadataQuery: NSMetadataQuery?
 	
 	// Optional completion handler that will be called when search finishes
-	private var completionHandler: ((_ results: [String]) -> Void)?
+	private var completionHandler: ((_ results: [FolderEntry]) -> Void)?
 	
 	// Initialize the manager
 	init() {
@@ -28,7 +28,7 @@ class MetadataSearchManager {
 	}
 	
 	// Search for folders in a specific directory that match a search string
-	func searchForFolders(inDirectory directory: URL, matching searchString: String, completion: @escaping ([String]) -> Void) {
+	func searchForFolders(inDirectory directory: URL, matching searchString: String, completion: @escaping ([FolderEntry]) -> Void) {
 		// Store the completion handler to call later
 		self.completionHandler = completion
 		
@@ -71,11 +71,11 @@ class MetadataSearchManager {
 	}
 	
 	// Process the search results into a usable format
-	private func processResults(from query: NSMetadataQuery) -> [String] {
+	private func processResults(from query: NSMetadataQuery) -> [FolderEntry] {
 		// Temporarily pause updates while processing
 		query.disableUpdates()
 		
-		var results: [String] = []
+		var results: [FolderEntry] = []
 		
 		// Process each result
 		let resultCount = query.resultCount
@@ -83,9 +83,7 @@ class MetadataSearchManager {
 			if let item = query.result(at: i) as? NSMetadataItem {
 				if let path = item.value(forAttribute: NSMetadataItemPathKey) as? String,
 				   let name = item.value(forAttribute: NSMetadataItemDisplayNameKey) as? String {
-					// Format the result as a string
-					let resultText = "• \(name)\n  Path: \(path)"
-					results.append(resultText)
+					results.append(FolderEntry(name: name, path: path))
 				}
 			}
 		}
