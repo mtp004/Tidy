@@ -2,11 +2,11 @@ import SwiftUI
 
 struct ContentView: View {
 	@State private var folderName: String = ""
-	@State private var searchResults: [FolderEntry] = []  // ✅ Store multiple results as an array
+	@State public var searchResults: [FolderEntry] = []  // ✅ Store multiple results as an array
 	private let searchManager = MetadataSearchManager()  // Instance of search manager
 	
 	var body: some View {
-		VStack(spacing: 16) {
+		VStack(spacing: 5) {
 			HStack {
 				TextField("Enter folder name here", text: $folderName)
 					.padding(5)
@@ -26,24 +26,7 @@ struct ContentView: View {
 				Spacer()
 			}
 			
-			if searchResults.isEmpty {
-				Text("Results will display here")
-					.foregroundColor(.gray)
-			} else {
-				ScrollView {
-					VStack(alignment: .leading, spacing: 8) {
-						// ✅ FIX: Use `.self` as an identifier
-						ForEach(searchResults, id: \.path) { entry in
-							FolderEntryView(entry: entry)
-						}
-					}
-					.padding(.vertical)
-				}
-				.frame(maxWidth: .infinity, maxHeight: .infinity)  // Limit scrollable height
-				.background(Color(NSColor.controlBackgroundColor))
-				.clipShape(RoundedRectangle(cornerRadius: 8))
-				.padding(5)
-			}
+			FolderSearchResultsView(searchResults: $searchResults)
 			
 			Spacer()
 		}

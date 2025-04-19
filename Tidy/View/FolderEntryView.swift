@@ -19,22 +19,26 @@ struct FolderEntryView: View {
 	
 	var body: some View {
 		HStack {
+			Image(systemName: "folder.fill")
+				.font(.title2)
+				.foregroundColor(.blue)
+				.padding(.trailing, 4)
+			
 			VStack(alignment: .leading, spacing: 4) {
 				Text(entry.name)
 					.font(.headline)
+					.lineLimit(1)
+					.truncationMode(.tail)
 				Text(entry.path)
 					.font(.caption)
 					.foregroundColor(.secondary)
+					.lineLimit(1)
 					.truncationMode(.middle)
 			}
+			
 			Spacer() // Pushes content to the left
 		}
-		.padding()
-		.background(
-			RoundedRectangle(cornerRadius: 12)
-				.fill(Color(NSColor.windowBackgroundColor))
-				.shadow(color: .black.opacity(0.1), radius: 4, x: 0, y: 2)
-		)
+		.padding(10)
 		.frame(maxWidth: .infinity)
 	}
 }
