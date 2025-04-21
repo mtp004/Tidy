@@ -2,14 +2,28 @@
 
 ## [Unreleased]
 
+### Added
+- Created  to modularize display of folder search results.
+- Added system folder icons to each search result row for improved UI clarity.
+- Introduced  state to show progress status during metadata queries.
+- Implemented logic to exclude  folder from search results using path prefix filtering in .
+
 ### Changed
-- **Expanded Search Scope:** `MetadataSearchManager` now includes all non-hidden subdirectories of the target directory when performing folder searches, rather than just the root directory itself.
-  - Added helper method `getAllNonHiddenSubdirectories(of:)` to recursively collect search paths.
-  - Replaced single-directory `searchScopes` assignment with a full list of subdirectories.
+- Replaced inline folder rendering logic in  with  for better separation of concerns.
+- Adjusted vertical spacing in  from 10 to 5 for a more compact layout.
+- Made  and  public to enable two-way binding with the results view.
 
-### Removed
-- Removed unnecessary debug print statement from `ContentView` that printed the user's home directory.
+### Improved
+- Enhanced layout in :
+  - Added leading folder icon () for each result row.
+  - Enabled text truncation and line limit for long folder names.
+  - Introduced alternating row backgrounds for better visual separation.
+- Improved metadata filtering logic to skip  when searching from the home directory.
+- Better user feedback during search:
+  - Searching for results… appears while search is in progress.
+  - Clearer empty state message when no results are available.
 
-### Fixed
-- Improved search reliability by ensuring important directories like `~/Desktop` are not skipped when the user selects a higher-level folder like their Home directory.
+---
+
+_This changelog was generated based on changes staged in Git as of April 20, 2025._
 

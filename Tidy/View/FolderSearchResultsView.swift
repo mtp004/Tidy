@@ -9,12 +9,16 @@ import SwiftUI
 
 struct FolderSearchResultsView: View {
 	@Binding var searchResults: [FolderEntry]
+	@Binding var isSearching: Bool
 	
 	var body: some View {
-		if searchResults.isEmpty {
-			Text("Results will display here")
+		if isSearching {
+			Text("Searching for results...")
 				.foregroundColor(.gray)
-		} else {
+		} else if searchResults.isEmpty {
+				Text("Results will display here")
+					.foregroundColor(.gray)
+		} else{
 			ScrollView {
 				VStack(alignment: .leading, spacing: 0) {
 					ForEach(Array(searchResults.enumerated()), id: \.element.path) { index, entry in
@@ -35,7 +39,7 @@ struct FolderSearchResultsView: View {
 }
 
 #Preview {
-	FolderSearchResultsView(searchResults: .constant([]))
+	FolderSearchResultsView(searchResults: .constant([]), isSearching: .constant(false))
 }
 
 

@@ -58,17 +58,19 @@ class MetadataSearchManager {
 		// Start the search
 		metadataQuery?.start()
 	}
-
+	
 	// Helper function to get all non-hidden subdirectories
 	private func getAllNonHiddenSubdirectories(of directory: URL) -> [String] {
 		let fileManager = FileManager.default
 		var directoryPaths = [directory.path] // Include the starting directory itself
+		let homeLibraryPath = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library").path
+		print(homeLibraryPath)
 		
 		do {
 			// Get all items in the directory, skipping hidden files
 			let contents = try fileManager.contentsOfDirectory(at: directory,
-														   includingPropertiesForKeys: [.isDirectoryKey],
-														   options: [.skipsHiddenFiles])
+															   includingPropertiesForKeys: [.isDirectoryKey],
+															   options: [.skipsHiddenFiles])
 			
 			// Filter to only include directories
 			for url in contents {
@@ -114,6 +116,9 @@ class MetadataSearchManager {
 			if let item = query.result(at: i) as? NSMetadataItem {
 				if let path = item.value(forAttribute: NSMetadataItemPathKey) as? String,
 				   let name = item.value(forAttribute: NSMetadataItemDisplayNameKey) as? String {
+					if path.hasPrefix(NSHomeDirectory() + "/Library"){
+						continue
+					}
 					results.append(FolderEntry(name: name, path: path))
 				}
 			}

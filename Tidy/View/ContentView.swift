@@ -2,7 +2,8 @@ import SwiftUI
 
 struct ContentView: View {
 	@State private var folderName: String = ""
-	@State public var searchResults: [FolderEntry] = []  // ✅ Store multiple results as an array
+	@State public var searchResults: [FolderEntry] = []
+	@State public var isSearching: Bool = false
 	private let searchManager = MetadataSearchManager()  // Instance of search manager
 	
 	var body: some View {
@@ -26,7 +27,7 @@ struct ContentView: View {
 				Spacer()
 			}
 			
-			FolderSearchResultsView(searchResults: $searchResults)
+			FolderSearchResultsView(searchResults: $searchResults, isSearching: $isSearching)
 			
 			Spacer()
 		}
@@ -36,6 +37,7 @@ struct ContentView: View {
 	
 	private func performSearch() {
 		// Get the user's home directory
+		isSearching = true
 		let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
 		// Perform the search in the Desktop directory
 		searchManager.searchForFolders(inDirectory: homeDirectory, matching: folderName) { results in
@@ -44,6 +46,7 @@ struct ContentView: View {
 					
 					searchResults = results
 				}
+				isSearching = false
 			}
 		}
 	}
