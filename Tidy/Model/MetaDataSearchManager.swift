@@ -2,12 +2,14 @@ import Foundation
 import Cocoa
 
 // This class handles all NSMetadataQuery operations
-class MetadataSearchManager {
+class MetadataSearchManager: ObservableObject {
 	// The NSMetadataQuery object that performs searches
 	private var metadataQuery: NSMetadataQuery?
 	
 	// Optional completion handler that will be called when search finishes
 	private var completionHandler: ((_ results: [FolderEntry]) -> Void)?
+	
+	@Published public var searchResult: [FolderEntry] = [FolderEntry]()
 	
 	// Initialize the manager
 	init() {
@@ -31,6 +33,8 @@ class MetadataSearchManager {
 	func searchForFolders(inDirectory directory: URL, matching searchString: String, completion: @escaping ([FolderEntry]) -> Void) {
 		// Store the completion handler to call later
 		self.completionHandler = completion
+		
+		self.searchResult = []
 		
 		// Stop any previous search
 		if metadataQuery?.isStarted == true {
@@ -92,11 +96,11 @@ class MetadataSearchManager {
 		guard let query = notification.object as? NSMetadataQuery else { return }
 		
 		// Process the search results
-		let results = processResults(from: query)
+		processResults(from: query)
 		
 		// Call the completion handler on the main thread
 		DispatchQueue.main.async {
-			self.completionHandler?(results)
+			self.completionHandler?(self.searchResult)
 		}
 		
 		// Stop the query since we're done
@@ -104,11 +108,9 @@ class MetadataSearchManager {
 	}
 	
 	// Process the search results into a usable format
-	private func processResults(from query: NSMetadataQuery) -> [FolderEntry] {
+	private func processResults(from query: NSMetadataQuery) -> Void{
 		// Temporarily pause updates while processing
 		query.disableUpdates()
-		
-		var results: [FolderEntry] = []
 		
 		// Process each result
 		let resultCount = query.resultCount
@@ -116,17 +118,16 @@ class MetadataSearchManager {
 			if let item = query.result(at: i) as? NSMetadataItem {
 				if let path = item.value(forAttribute: NSMetadataItemPathKey) as? String,
 				   let name = item.value(forAttribute: NSMetadataItemDisplayNameKey) as? String {
-					if path.hasPrefix(NSHomeDirectory() + "/Library"){
+					if path.hasPrefix(NSHomeDirectory() + "/Library"){//TODO: delete once alternative is found
 						continue
 					}
-					results.append(FolderEntry(name: name, path: path))
+					searchResult.append(FolderEntry(name: name, path: path))
 				}
 			}
 		}
 		
 		// Re-enable updates
 		query.enableUpdates()
-		return results
 	}
 	
 	// Clean up resources

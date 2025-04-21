@@ -2,9 +2,8 @@ import SwiftUI
 
 struct ContentView: View {
 	@State private var folderName: String = ""
-	@State public var searchResults: [FolderEntry] = []
-	@State public var isSearching: Bool = false
-	private let searchManager = MetadataSearchManager()  // Instance of search manager
+	@State private var isSearching: Bool = false
+	@StateObject private var searchManager = MetadataSearchManager()  // Instance of search manager
 	
 	var body: some View {
 		VStack(spacing: 5) {
@@ -15,7 +14,7 @@ struct ContentView: View {
 					.frame(minWidth: 150)
 					.onChange(of: folderName) { oldValue, newValue in
 						if newValue.isEmpty {
-							searchResults = []
+							searchManager.searchResult = []
 						}
 					}
 				
@@ -27,7 +26,7 @@ struct ContentView: View {
 				Spacer()
 			}
 			
-			FolderSearchResultsView(searchResults: $searchResults, isSearching: $isSearching)
+			FolderSearchResultsView(searchResults: $searchManager.searchResult, isSearching: $isSearching)
 			
 			Spacer()
 		}
@@ -40,12 +39,8 @@ struct ContentView: View {
 		isSearching = true
 		let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
 		// Perform the search in the Desktop directory
-		searchManager.searchForFolders(inDirectory: homeDirectory, matching: folderName) { results in
+		searchManager.searchForFolders(inDirectory: homeDirectory, matching: folderName) {_ in 
 			DispatchQueue.main.async {
-				if !results.isEmpty {
-					
-					searchResults = results
-				}
 				isSearching = false
 			}
 		}
