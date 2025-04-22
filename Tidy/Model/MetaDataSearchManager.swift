@@ -5,15 +5,34 @@ import Cocoa
 class MetadataSearchManager: ObservableObject {
 	// The NSMetadataQuery object that performs searches
 	private var metadataQuery: NSMetadataQuery?
-	
 	// Optional completion handler that will be called when search finishes
 	private var completionHandler: ((_ results: [FolderEntry]) -> Void)?
-	
 	@Published public var searchResult: [FolderEntry] = [FolderEntry]()
+	private var searchScope: [URL] = [URL]()
+	private var excludeScope: [URL] = [URL]()
+	
 	
 	// Initialize the manager
-	init() {
+	init(homeDirectory: URL = FileManager.default.homeDirectoryForCurrentUser, excludeScope: [URL]? = nil) {
+		if let providedExcludeScope = excludeScope {
+			self.excludeScope = providedExcludeScope
+		} else {
+			// Use the instance method to set up the excludeScope
+			self.excludeScope = [URL]()
+			self.setupExcludedScope()
+		}
+		setupSearchScope(from: homeDirectory)
 		setupMetadataQuery()
+	}
+	
+	private func shouldExcludeDirectory(_ directory: URL) -> Bool {
+		// Check if the directory is in our exclude list
+		for excludedDir in excludeScope {
+			if directory.path.hasPrefix(excludedDir.path) {
+				return true
+			}
+		}
+		return false
 	}
 	
 	// Set up the metadata query and its notification observers
@@ -29,25 +48,40 @@ class MetadataSearchManager: ObservableObject {
 		)
 	}
 	
+	// Set up the default scope to be excluded, only use if not provided a custom excluded scope
+	private func setupExcludedScope() {
+		let homeDir = FileManager.default.homeDirectoryForCurrentUser
+		
+		// Common directories to exclude
+		excludeScope = [
+			homeDir.appendingPathComponent("Library"),
+			homeDir.appendingPathComponent("iCloud Drive (Archive)")
+		]
+	}
 	// Search for folders in a specific directory that match a search string
 	func searchForFolders(inDirectory directory: URL, matching searchString: String, completion: @escaping ([FolderEntry]) -> Void) {
-		// Store the completion handler to call later
-		self.completionHandler = completion
-		
-		self.searchResult = []
-		
 		// Stop any previous search
 		if metadataQuery?.isStarted == true {
 			metadataQuery?.stop()
 		}
+		// Store the completion handler to call later
+		self.completionHandler = completion
+		self.searchResult.removeAll()
+		
+		if !searchString.isEmpty {
+			for url in searchScope {
+				let directoryName = url.lastPathComponent
+				if directoryName.localizedCaseInsensitiveContains(searchString) {
+					searchResult.append(FolderEntry(name: directoryName, path: url.path))
+				}
+			}
+		}
 		
 		// Get all non-hidden subdirectories
-		let searchPaths = getAllNonHiddenSubdirectories(of: directory)
-		
-		print("Searching in \(searchPaths.count) directories")
+		print("Searching in \(searchScope.count) directories")
 		
 		// Configure the search scope with all subdirectories
-		metadataQuery?.searchScopes = searchPaths
+		metadataQuery?.searchScopes = searchScope
 		
 		// Set up the search criteria using NSPredicate
 		let predicate = NSPredicate(format: "kMDItemContentTypeTree == 'public.folder' AND kMDItemDisplayName CONTAINS[cd] %@", searchString)
@@ -64,11 +98,11 @@ class MetadataSearchManager: ObservableObject {
 	}
 	
 	// Helper function to get all non-hidden subdirectories
-	private func getAllNonHiddenSubdirectories(of directory: URL) -> [String] {
+	private func setupSearchScope(from directory: URL) {
 		let fileManager = FileManager.default
-		var directoryPaths = [directory.path] // Include the starting directory itself
-		let homeLibraryPath = FileManager.default.homeDirectoryForCurrentUser.appendingPathComponent("Library").path
-		print(homeLibraryPath)
+		
+		// Clear existing entries
+		searchScope.removeAll()
 		
 		do {
 			// Get all items in the directory, skipping hidden files
@@ -80,15 +114,17 @@ class MetadataSearchManager: ObservableObject {
 			for url in contents {
 				var isDirectory: ObjCBool = false
 				if fileManager.fileExists(atPath: url.path, isDirectory: &isDirectory) && isDirectory.boolValue {
-					directoryPaths.append(url.path)
+					// Skip Library directory in home folder
+					if shouldExcludeDirectory(url) {
+						continue
+					}
+					searchScope.append(url)
 				}
 			}
 			
 		} catch {
 			print("Error getting subdirectories: \(error)")
 		}
-		
-		return directoryPaths
 	}
 	
 	// This method is called when the search completes
@@ -118,9 +154,6 @@ class MetadataSearchManager: ObservableObject {
 			if let item = query.result(at: i) as? NSMetadataItem {
 				if let path = item.value(forAttribute: NSMetadataItemPathKey) as? String,
 				   let name = item.value(forAttribute: NSMetadataItemDisplayNameKey) as? String {
-					if path.hasPrefix(NSHomeDirectory() + "/Library"){//TODO: delete once alternative is found
-						continue
-					}
 					searchResult.append(FolderEntry(name: name, path: path))
 				}
 			}
