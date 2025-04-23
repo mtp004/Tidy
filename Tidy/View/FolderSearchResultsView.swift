@@ -10,33 +10,52 @@ import SwiftUI
 struct FolderSearchResultsView: View {
 	@Binding var searchResults: [FolderEntry]
 	@Binding var isSearching: Bool
+	@State private var selectedEntries: Set<String> = []  // Track selected paths
 	
 	var body: some View {
 		if isSearching {
 			Text("Searching for results...")
 				.foregroundColor(.gray)
 		} else if searchResults.isEmpty {
-				Text("Results will display here")
-					.foregroundColor(.gray)
+			Text("Results will display here")
+				.foregroundColor(.gray)
 		} else{
 			ScrollView {
-				VStack(alignment: .leading, spacing: 0) {
-					ForEach(Array(searchResults.enumerated()), id: \.element.path) { index, entry in
-						FolderEntryView(entry: entry)
-							.background(index % 2 == 0 ?
-										Color(NSColor.windowBackgroundColor) :
-											Color(NSColor.alternatingContentBackgroundColors[1]))
-							.cornerRadius(4)
+				LazyVStack(alignment: .leading, spacing: 0) {
+					ForEach(Array(searchResults.enumerated()), id: \.element.path) { index, item in
+						HStack {
+							Spacer()
+							Toggle(isOn: Binding<Bool>(
+								get: { selectedEntries.contains(item.path) },
+								set: { isChecked in
+									if isChecked {
+										selectedEntries.insert(item.path)
+									} else {
+										selectedEntries.remove(item.path)
+									}
+								}
+							)) {
+								EmptyView()
+							}
+							.labelsHidden()
+							
+							FolderEntryView(entry: item)
+						}
+						.background(index % 2 == 0 ?
+									Color(NSColor.windowBackgroundColor) :
+										Color(NSColor.alternatingContentBackgroundColors[1]))
+						.cornerRadius(4)
 					}
 				}
 			}
-			.frame(maxWidth: .infinity, maxHeight: .infinity)  // Limit scrollable height
+			.frame(maxWidth: .infinity, maxHeight: 300)
 			.background(Color(NSColor.controlBackgroundColor))
 			.clipShape(RoundedRectangle(cornerRadius: 8))
 			.padding(5)
 		}
 	}
 }
+
 
 #Preview {
 	FolderSearchResultsView(searchResults: .constant([]), isSearching: .constant(false))

@@ -16,6 +16,7 @@ struct FolderEntry: Identifiable {
 
 struct FolderEntryView: View {
 	let entry: FolderEntry
+	@State var isSelected: Bool = false
 	
 	var body: some View {
 		HStack {

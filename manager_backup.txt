@@ -27,18 +27,32 @@ class MetadataSearchManager: ObservableObject {
 	
 	private func shouldExcludeDirectory(_ directory: URL) -> Bool {
 		// Check if the directory is in our exclude list
-		return excludeScope.contains { directory.path.hasPrefix($0.path) }
+		for excludedDir in excludeScope {
+			if directory.path.hasPrefix(excludedDir.path) {
+				return true
+			}
+		}
+		return false
 	}
 	
 	// Set up the metadata query and its notification observers
 	private func setupMetadataQuery() {
 		metadataQuery = NSMetadataQuery()
+		metadataQuery?.notificationBatchingInterval = 0.1
 		
 		// Register for the notification that tells us when search is complete
 		NotificationCenter.default.addObserver(
 			self,
 			selector: #selector(queryDidFinishGathering(_:)),
 			name: NSNotification.Name.NSMetadataQueryDidFinishGathering,
+			object: metadataQuery
+		)
+		
+		// Add observer for batched updates
+		NotificationCenter.default.addObserver(
+			self,
+			selector: #selector(queryDidUpdate(_:)),
+			name: NSNotification.Name.NSMetadataQueryDidUpdate,
 			object: metadataQuery
 		)
 	}
@@ -71,6 +85,9 @@ class MetadataSearchManager: ObservableObject {
 				}
 			}
 		}
+		
+		// Get all non-hidden subdirectories
+		print("Searching in \(searchScope.count) directories")
 		
 		// Configure the search scope with all subdirectories
 		metadataQuery?.searchScopes = searchScope
@@ -119,6 +136,7 @@ class MetadataSearchManager: ObservableObject {
 		}
 	}
 	
+	// This method is called when the search completes
 	@objc private func queryDidFinishGathering(_ notification: Notification) {
 		guard let query = notification.object as? NSMetadataQuery else { return }
 		
@@ -134,18 +152,31 @@ class MetadataSearchManager: ObservableObject {
 		query.stop()
 	}
 	
+	// Handle batched updates as they come in
+	@objc private func queryDidUpdate(_ notification: Notification) {
+		guard let query = notification.object as? NSMetadataQuery else { return }
+		processResults(from: query)
+	}
+	
 	// Process the search results into a usable format
 	private func processResults(from query: NSMetadataQuery) -> Void{
-		// Process each result
-		let resultCount = query.resultCount
-		for i in 0..<resultCount {
-			if let item = query.result(at: i) as? NSMetadataItem {
-				if let path = item.value(forAttribute: NSMetadataItemPathKey) as? String,
-				   let name = item.value(forAttribute: NSMetadataItemDisplayNameKey) as? String {
-					searchResult.append(FolderEntry(name: name, path: path))
+		// Temporarily pause updates while processing
+		query.disableUpdates()
+		DispatchQueue.main.async {
+			// Process each result
+			let resultCount = query.resultCount
+			for i in 0..<resultCount {
+				if let item = query.result(at: i) as? NSMetadataItem {
+					if let path = item.value(forAttribute: NSMetadataItemPathKey) as? String,
+					   let name = item.value(forAttribute: NSMetadataItemDisplayNameKey) as? String {
+						self.searchResult.append(FolderEntry(name: name, path: path))
+					}
 				}
 			}
 		}
+		
+		// Re-enable updates
+		query.enableUpdates()
 	}
 	
 	// Clean up resources
@@ -156,3 +187,4 @@ class MetadataSearchManager: ObservableObject {
 		NotificationCenter.default.removeObserver(self)
 	}
 }
+

@@ -3,8 +3,10 @@ import SwiftUI
 struct ContentView: View {
 	@State private var folderName: String = ""
 	@State private var isSearching: Bool = false
-	@StateObject private var searchManager = MetadataSearchManager()  // Instance of search manager
+	@StateObject private var searchManager = MetadataSearchManager()
 	
+	@State private var debounceSearchWorkItem: DispatchWorkItem?  // NEW
+
 	var body: some View {
 		VStack(spacing: 5) {
 			HStack {
@@ -13,15 +15,8 @@ struct ContentView: View {
 					.textFieldStyle(RoundedBorderTextFieldStyle())
 					.frame(minWidth: 150)
 					.onChange(of: folderName) { oldValue, newValue in
-						if newValue.isEmpty {
-							searchManager.searchResult = []
-						}
-					}
-				
-				Button("Search") {
-					performSearch()
+						debounceSearch(for: newValue)
 				}
-				.disabled(folderName.isEmpty)
 				
 				Spacer()
 			}
@@ -33,13 +28,26 @@ struct ContentView: View {
 		.frame(minWidth: 300, minHeight: 200)
 		.padding(5)
 	}
+
+	private func debounceSearch(for input: String) {
+		// Cancel previous work
+		debounceSearchWorkItem?.cancel()
+
+		if input.isEmpty {
+			searchManager.searchResult.removeAll()
+			return
+		}
+
+		// Schedule new debounced search
+		let workItem = DispatchWorkItem { performSearch() }
+		debounceSearchWorkItem = workItem
+		DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: workItem)
+	}
 	
 	private func performSearch() {
-		// Get the user's home directory
 		isSearching = true
 		let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
-		// Perform the search in the Desktop directory
-		searchManager.searchForFolders(inDirectory: homeDirectory, matching: folderName) {_ in 
+		searchManager.searchForFolders(inDirectory: homeDirectory, matching: folderName) { _ in
 			DispatchQueue.main.async {
 				isSearching = false
 			}
