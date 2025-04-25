@@ -1,61 +1,57 @@
+//
+//  ContentView.swift
+//  Tidy
+//
+//  Created by Tri Pham on 4/25/25.
+//
+
 import SwiftUI
 
-struct ContentView: View {
-	@State private var folderName: String = ""
-	@State private var isSearching: Bool = false
-	@StateObject private var searchManager = MetadataSearchManager()
-	
-	@State private var debounceSearchWorkItem: DispatchWorkItem?  // NEW
+enum ViewState {
+	case none
+	case search
+}
 
+struct ContentView: View {
+	@State private var currentView: ViewState = .none
+	
 	var body: some View {
-		VStack(spacing: 5) {
-			HStack {
-				TextField("Enter folder name here", text: $folderName)
-					.padding(5)
-					.textFieldStyle(RoundedBorderTextFieldStyle())
-					.frame(minWidth: 150)
-					.onChange(of: folderName) { oldValue, newValue in
-						debounceSearch(for: newValue)
+		HStack {
+			VStack(spacing: 5) {
+				Button(action: {
+					// Toggle between states
+					currentView = .search
+				}) {
+					Image(systemName: "magnifyingglass")
+						.resizable()
+						.scaledToFit()
+						.frame(width: 24, height: 24)
+						.padding(8)
 				}
+				.buttonStyle(PlainButtonStyle())
+				.background(Color.secondary)
+				.foregroundColor(.white)
+				.cornerRadius(10)
+				.padding(5)
 				
 				Spacer()
 			}
+			.frame(minWidth: 50, maxHeight: .infinity)
+			.padding(5)
+			.background(Color.black.opacity(0.1))
 			
-			FolderSearchResultsView(searchResults: $searchManager.searchResult, isSearching: $isSearching)
-			
-			Spacer()
-		}
-		.frame(minWidth: 300, minHeight: 200)
-		.padding(5)
-	}
-
-	private func debounceSearch(for input: String) {
-		// Cancel previous work
-		debounceSearchWorkItem?.cancel()
-
-		if input.isEmpty {
-			searchManager.searchResult.removeAll()
-			return
-		}
-
-		// Schedule new debounced search
-		let workItem = DispatchWorkItem { performSearch() }
-		debounceSearchWorkItem = workItem
-		DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: workItem)
-	}
-	
-	private func performSearch() {
-		isSearching = true
-		let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
-		searchManager.searchForFolders(inDirectory: homeDirectory, matching: folderName) { _ in
-			DispatchQueue.main.async {
-				isSearching = false
+			// Area to the right with a fixed width and dynamic content
+			VStack {
+				if currentView == .search {
+					SearchView()
+				}
 			}
+			.frame(minWidth: 400) // Fixed width for the right side
 		}
+		.frame(minWidth: 300, maxHeight: .infinity)
 	}
 }
 
 #Preview {
 	ContentView()
 }
-
