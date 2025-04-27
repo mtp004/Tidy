@@ -13,7 +13,7 @@ struct TidyApp: App {
 
     var body: some Scene {
         WindowGroup {
-            SearchView()
+            ContentView()
                 .environment(\.managedObjectContext, persistenceController.container.viewContext)
         }
     }

@@ -1,33 +1,20 @@
 # Changelog
 
-## [Unreleased]
-
-### Changed
-- **Tidy.xcodeproj/project.pbxproj**
-  - Changed the  to Apple Development for macOS SDK.
-  - Added the  key for the team ID (5FSYX2QT8A).
-  
-- **Tidy/Tidy.entitlements**
-  - Added app sandbox entitlement to allow access to read and write assets such as movies, music, pictures, and user-selected files.
-  
-- **Tidy/TidyApp.swift**
-  - Changed the root view from  to .
-  
-- **Tidy/View/ContentView.swift**
-  - Removed unused states and search logic.
-  - Implemented  enum to manage the view displayed on the right side (either  or ).
-  - Added a button to toggle the right view between none and search.
-  - Removed previous folder search view and integrated search functionality directly into .
-
-- **Tidy/View/SearchView.swift**
-  - New file:  is now a separate view that contains the folder search UI.
-  - Implemented debounced search functionality.
-  - Integrated  to display search results.
+## [2025-04-26]
 
 ### Added
-- **SearchView**: A new SwiftUI view that handles folder name input and displays search results for folders.
+- Created  to manage security-scoped bookmarks.
+  - Saves and loads bookmarks using .
+  - Shows  when a saved bookmark is missing or invalid.
+  - Handles access to security-scoped resources with  and .
 
-### Removed
-- Removed old folder search UI and logic from , and refactored the search functionality into the new .
+### Changed
+- Modified  to use  as the main view instead of .
 
+### Updated
+- Updated :
+  - Added a  state property.
+  - On entering the search view (), automatically load and access the saved bookmark.
+  - On exiting the search view (), properly stop accessing the bookmark.
+  - Improved layout to add a spacer between the sidebar and the main content area.
 
