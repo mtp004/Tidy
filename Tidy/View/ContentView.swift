@@ -14,7 +14,6 @@ enum ViewState {
 
 struct ContentView: View {
 	@State private var currentView: ViewState = .none
-	@State private var searchURL: URL? = nil
 	var body: some View {
 		HStack {
 			VStack(spacing: 5) {
@@ -43,23 +42,13 @@ struct ContentView: View {
 			VStack {
 				if currentView == .search {
 					SearchView()
-						.onAppear(){
-							searchURL = BookmarkManager.loadBookmark(withKey: "home")
-							if let searchURL{
-								BookmarkManager.startAccessing(url: searchURL)
-							}
-						}
-						.onDisappear(){
-							if let searchURL{
-								BookmarkManager.stopAccessing(url: searchURL)
-							}
-						}
-					
+						.frame(maxWidth: .infinity, maxHeight: .infinity)
 				}
 			}
-			.frame(minWidth: 400) // Fixed width for the right side
+			.frame(maxWidth: .infinity, maxHeight: .infinity)
 		}
-		.frame(minWidth: 300, maxHeight: .infinity)
+		.frame(minWidth: 700, idealWidth: 700, maxWidth: .infinity, minHeight: 400, idealHeight: 400, maxHeight: .infinity)
+
 	}
 }
 

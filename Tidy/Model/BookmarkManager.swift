@@ -5,7 +5,7 @@ struct BookmarkManager {
 	// Key for storing bookmarks in UserDefaults
 	private static let bookmarksKey = "SecurityScopedBookmarks"
 	
-	private static var homeDirectoryURL: URL? {
+	static var homeDirectoryURL: URL? {
 		let pw = getpwuid(getuid())
 		if let homePath = pw?.pointee.pw_dir {
 			let homePathString = String(cString: homePath)

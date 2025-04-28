@@ -48,7 +48,7 @@ struct FolderSearchResultsView: View {
 					}
 				}
 			}
-			.frame(maxWidth: .infinity, maxHeight: 300)
+			.frame(maxWidth: .infinity, maxHeight: .infinity)
 			.background(Color(NSColor.controlBackgroundColor))
 			.clipShape(RoundedRectangle(cornerRadius: 8))
 			.padding(5)

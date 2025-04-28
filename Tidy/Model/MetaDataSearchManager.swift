@@ -3,6 +3,7 @@ import Cocoa
 
 // This class handles all NSMetadataQuery operations
 class MetadataSearchManager: ObservableObject {
+	var searchURL: URL? = nil
 	// The NSMetadataQuery object that performs searches
 	private var metadataQuery: NSMetadataQuery?
 	// Optional completion handler that will be called when search finishes
@@ -11,18 +12,18 @@ class MetadataSearchManager: ObservableObject {
 	private var searchScope: [URL] = [URL]()
 	private var excludeScope: [URL] = [URL]()
 	
+	init(){
+		SetupExcludedScope()
+		SetupMetadataQuery()
+	}
 	
 	// Initialize the manager
-	init(homeDirectory: URL = FileManager.default.homeDirectoryForCurrentUser, excludeScope: [URL]? = nil) {
-		if let providedExcludeScope = excludeScope {
-			self.excludeScope = providedExcludeScope
-		} else {
-			// Use the instance method to set up the excludeScope
-			self.excludeScope = [URL]()
-			self.setupExcludedScope()
+	func UpdateSearchURL(url: URL?){
+		if let searchURL = url {
+			UpdateSearchScope(from: searchURL)
+		} else{
+			searchScope.removeAll()
 		}
-		setupSearchScope(from: homeDirectory)
-		setupMetadataQuery()
 	}
 	
 	private func shouldExcludeDirectory(_ directory: URL) -> Bool {
@@ -31,7 +32,7 @@ class MetadataSearchManager: ObservableObject {
 	}
 	
 	// Set up the metadata query and its notification observers
-	private func setupMetadataQuery() {
+	private func SetupMetadataQuery() {
 		metadataQuery = NSMetadataQuery()
 		
 		// Register for the notification that tells us when search is complete
@@ -44,14 +45,13 @@ class MetadataSearchManager: ObservableObject {
 	}
 	
 	// Set up the default scope to be excluded, only use if not provided a custom excluded scope
-	private func setupExcludedScope() {
-		let homeDir = FileManager.default.homeDirectoryForCurrentUser
-		
-		// Common directories to exclude
-		excludeScope = [
-			homeDir.appendingPathComponent("Library"),
-			homeDir.appendingPathComponent("iCloud Drive (Archive)")
-		]
+	private func SetupExcludedScope() {
+		if let homeDir = BookmarkManager.homeDirectoryURL{
+			// Common directories to exclude
+			excludeScope = [
+				homeDir.appendingPathComponent("iCloud Drive (Archive)")
+			]
+		}
 	}
 	// Search for folders in a specific directory that match a search string
 	func searchForFolders(inDirectory directory: URL, matching searchString: String, completion: @escaping ([FolderEntry]) -> Void) {
@@ -90,7 +90,7 @@ class MetadataSearchManager: ObservableObject {
 	}
 	
 	// Helper function to get all non-hidden subdirectories
-	private func setupSearchScope(from directory: URL) {
+	private func UpdateSearchScope(from directory: URL) {
 		let fileManager = FileManager.default
 		
 		// Clear existing entries
@@ -113,7 +113,6 @@ class MetadataSearchManager: ObservableObject {
 					searchScope.append(url)
 				}
 			}
-			
 		} catch {
 			print("Error getting subdirectories: \(error)")
 		}
