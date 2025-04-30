@@ -10,21 +10,60 @@ struct SearchView: View {
 	
 	var body: some View {
 		VStack(spacing: 5) {
-			HStack {
-				TextField("Enter folder name here", text: $folderName)
-					.padding(5)
-					.textFieldStyle(RoundedBorderTextFieldStyle())
-					.frame(minWidth: 150)
-					.onChange(of: folderName) { oldValue, newValue in
-						debounceSearch(for: newValue)
+			HStack(spacing: 5){
+				Menu {
+					Button("Search by Name") {
+						// action
 					}
-				Spacer()
+					Button("Search by Date") {
+						// action
+					}
+					Button("Search by Tag") {
+						// action
+					}
+				} label: {
+					Image(systemName: "gearshape")
+						.foregroundColor(.gray)
+				}
+				.frame(width: 40, height: 32)
+				.menuStyle(BorderlessButtonMenuStyle())
+				.background(
+					RoundedRectangle(cornerRadius: 5)
+						.fill(Color.gray.opacity(0.5))
+						.stroke(Color.gray.opacity(0.4), lineWidth: 1)
+				)
+
+				HStack {
+					Image(systemName: "magnifyingglass")
+						.foregroundColor(.gray)
+					TextField("Enter folder name here", text: $folderName)
+					
+						.textFieldStyle(PlainTextFieldStyle())
+						.onChange(of: folderName) { oldValue, newValue in
+							debounceSearch(for: newValue)
+						}
+					Spacer()
+				}
+				.padding(8)
+				.overlay(
+					RoundedRectangle(cornerRadius: 10)
+						.stroke(Color.cyan.opacity(0.4), lineWidth: 3)
+				)
+				.frame(minWidth: 150)
 			}
+			.padding(.vertical, 5)
+			.padding(.horizontal, 10)
+			.frame(maxWidth: .infinity)
+			.background(Color.gray.opacity(0.2))
+			.overlay(
+				Rectangle()
+					.stroke(Color.gray.opacity(0.4), lineWidth: 1)
+			)
+			
 			FolderSearchResultsView(searchResults: $searchManager.searchResult, isSearching: $isSearching)
 			
 			Spacer()
 		}
-		.padding(5)
 		.onAppear(){
 			searchURL = BookmarkManager.loadBookmark(withKey: "home")
 			if let searchURL{
