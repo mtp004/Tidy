@@ -4,6 +4,11 @@ struct SearchView: View {
 	@State private var searchURL: URL? = nil
 	@State private var folderName: String = ""
 	@State private var isSearching: Bool = false
+	@State private var showPopover = false
+	
+	//Search options toggle variable
+	@State private var caseSensitive: Bool = false
+	@State private var exactMatch: Bool = false
 	@StateObject private var searchManager = MetadataSearchManager()
 	
 	@State private var debounceSearchWorkItem: DispatchWorkItem?
@@ -11,28 +16,24 @@ struct SearchView: View {
 	var body: some View {
 		VStack(spacing: 5) {
 			HStack(spacing: 5){
-				Menu {
-					Button("Search by Name") {
-						// action
+				
+				Button(action: {
+					showPopover.toggle()
+				}) {
+					HStack(spacing: 2){
+						Image(systemName: "gearshape")
+						Image(systemName: "chevron.down")
 					}
-					Button("Search by Date") {
-						// action
-					}
-					Button("Search by Tag") {
-						// action
-					}
-				} label: {
-					Image(systemName: "gearshape")
-						.foregroundColor(.gray)
+					.frame(width: 25, height: 30)
 				}
-				.frame(width: 40, height: 32)
-				.menuStyle(BorderlessButtonMenuStyle())
-				.background(
-					RoundedRectangle(cornerRadius: 5)
-						.fill(Color.gray.opacity(0.5))
-						.stroke(Color.gray.opacity(0.4), lineWidth: 1)
-				)
-
+				.popover(isPresented: $showPopover, arrowEdge: .bottom) {
+					VStack(alignment: .leading, spacing: 10) {
+						Toggle("Case sensitive", isOn: $caseSensitive)
+						Toggle("Exact match", isOn: $exactMatch)
+					}
+					.padding(10)
+				}
+				
 				HStack {
 					Image(systemName: "magnifyingglass")
 						.foregroundColor(.gray)

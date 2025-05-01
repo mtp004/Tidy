@@ -1,20 +1,26 @@
-# Changelog
+### Changelog for SearchView.swift
+**Date:** May 1, 2025
 
-## [2025-04-26]
+---
 
-### Added
-- Created  to manage security-scoped bookmarks.
-  - Saves and loads bookmarks using .
-  - Shows  when a saved bookmark is missing or invalid.
-  - Handles access to security-scoped resources with  and .
+**Added:**
+- New state variables for popover and search options:
+  - 
+  - 
+  - 
+  
+- Replaced the  with a  that toggles the visibility of a popover for search options.
+- A popover view containing two  controls:
+  - **Case sensitive**: Toggles case sensitivity in search.
+  - **Exact match**: Toggles exact match search behavior.
+- Popover is aligned to the **leading edge** with padding for better layout control.
 
-### Changed
-- Modified  to use  as the main view instead of .
+**Removed:**
+- The previous  with placeholder search options:
+  - Search by Name
+  - Search by Date
+  - Search by Tag
 
-### Updated
-- Updated :
-  - Added a  state property.
-  - On entering the search view (), automatically load and access the saved bookmark.
-  - On exiting the search view (), properly stop accessing the bookmark.
-  - Improved layout to add a spacer between the sidebar and the main content area.
+**Improved:**
+- Refined the layout of the search options to use a popover, allowing a cleaner user experience for configuring search behavior.
 
