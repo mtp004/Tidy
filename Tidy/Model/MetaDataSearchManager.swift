@@ -4,11 +4,8 @@ import Cocoa
 
 // This class handles all NSMetadataQuery operations
 class MetadataSearchManager: ObservableObject {
-	@Published var caseSensitive: Bool = false
-	@Published var exactMatch: Bool = false
-	
 	var searchURL: URL? = nil
-	// The NSMetadataQuery object that performs searches
+	private var predicateString: String = "kMDItemContentTypeTree == 'public.folder' AND kMDItemDisplayName CONTAINS[cd] %@"
 	private var metadataQuery: NSMetadataQuery?
 	// Optional completion handler that will be called when search finishes
 	private var completionHandler: ((_ results: [FolderEntry]) -> Void)?
@@ -21,19 +18,18 @@ class MetadataSearchManager: ObservableObject {
 		SetupMetadataQuery()
 	}
 	
-	func MakeNSPredicate(searchString: String) -> NSPredicate {
+	func UpdateNSPredicate(caseSensitive: Bool, exactMatch: Bool){
 		let operatorString: String
 
 		if exactMatch {
 			// Exact match
-			operatorString = caseSensitive ? "==" : "=[cd]"  // Use '==' for exact match, with case-sensitivity '[c]' for case-insensitive
+			operatorString = caseSensitive ? "==" : "==[cd]"  // Use '==' for exact match, with case-sensitivity '[c]' for case-insensitive
 		} else {
 			// Partial match
 			operatorString = caseSensitive ? "CONTAINS" : "CONTAINS[cd]"  // 'CONTAINS' with or without case-sensitivity
 		}
 
-		let format = "kMDItemContentTypeTree == 'public.folder' AND kMDItemDisplayName \(operatorString) %@"
-		return NSPredicate(format: format, searchString)
+		predicateString = "kMDItemContentTypeTree == 'public.folder' AND kMDItemDisplayName \(operatorString) %@"
 	}
 	
 	// Initialize the manager
@@ -44,6 +40,7 @@ class MetadataSearchManager: ObservableObject {
 			searchScope.removeAll()
 		}
 	}
+	
 	
 	private func shouldExcludeDirectory(_ directory: URL) -> Bool {
 		// Check if the directory is in our exclude list
@@ -95,8 +92,7 @@ class MetadataSearchManager: ObservableObject {
 		metadataQuery?.searchScopes = searchScope
 		
 		// Set up the search criteria using NSPredicate
-		let predicate = MakeNSPredicate(searchString: searchString)
-		metadataQuery?.predicate = predicate
+		metadataQuery?.predicate = NSPredicate(format: predicateString, searchString)
 		
 		// Specify which attributes we want to retrieve
 		metadataQuery?.valueListAttributes = [

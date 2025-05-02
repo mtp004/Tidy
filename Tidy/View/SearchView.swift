@@ -30,11 +30,11 @@ struct SearchView: View {
 					VStack(alignment: .leading, spacing: 10) {
 						Toggle("Case sensitive", isOn: $caseSensitive)
 							.onChange(of: caseSensitive) { oldValue, newValue in
-								searchManager.caseSensitive = newValue
+								searchManager.UpdateNSPredicate(caseSensitive: caseSensitive, exactMatch: exactMatch)
 							}
 						Toggle("Exact match", isOn: $exactMatch)
 							.onChange(of: exactMatch) { oldValue, newValue in
-								searchManager.exactMatch = newValue
+								searchManager.UpdateNSPredicate(caseSensitive: caseSensitive, exactMatch: exactMatch)
 							}
 					}
 					.padding(10)
