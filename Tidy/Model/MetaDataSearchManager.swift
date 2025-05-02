@@ -1,8 +1,12 @@
 import Foundation
+import SwiftUI
 import Cocoa
 
 // This class handles all NSMetadataQuery operations
 class MetadataSearchManager: ObservableObject {
+	@Published var caseSensitive: Bool = false
+	@Published var exactMatch: Bool = false
+	
 	var searchURL: URL? = nil
 	// The NSMetadataQuery object that performs searches
 	private var metadataQuery: NSMetadataQuery?
@@ -15,6 +19,21 @@ class MetadataSearchManager: ObservableObject {
 	init(){
 		SetupExcludedScope()
 		SetupMetadataQuery()
+	}
+	
+	func MakeNSPredicate(searchString: String) -> NSPredicate {
+		let operatorString: String
+
+		if exactMatch {
+			// Exact match
+			operatorString = caseSensitive ? "==" : "=[cd]"  // Use '==' for exact match, with case-sensitivity '[c]' for case-insensitive
+		} else {
+			// Partial match
+			operatorString = caseSensitive ? "CONTAINS" : "CONTAINS[cd]"  // 'CONTAINS' with or without case-sensitivity
+		}
+
+		let format = "kMDItemContentTypeTree == 'public.folder' AND kMDItemDisplayName \(operatorString) %@"
+		return NSPredicate(format: format, searchString)
 	}
 	
 	// Initialize the manager
@@ -76,7 +95,7 @@ class MetadataSearchManager: ObservableObject {
 		metadataQuery?.searchScopes = searchScope
 		
 		// Set up the search criteria using NSPredicate
-		let predicate = NSPredicate(format: "kMDItemContentTypeTree == 'public.folder' AND kMDItemDisplayName CONTAINS[cd] %@", searchString)
+		let predicate = MakeNSPredicate(searchString: searchString)
 		metadataQuery?.predicate = predicate
 		
 		// Specify which attributes we want to retrieve

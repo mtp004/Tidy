@@ -1,26 +1,21 @@
-### Changelog for SearchView.swift
-**Date:** May 1, 2025
+# Changelog
 
----
+## [Unreleased] - 2025-05-02
 
-**Added:**
-- New state variables for popover and search options:
-  - 
-  - 
-  - 
-  
-- Replaced the  with a  that toggles the visibility of a popover for search options.
-- A popover view containing two  controls:
-  - **Case sensitive**: Toggles case sensitivity in search.
-  - **Exact match**: Toggles exact match search behavior.
-- Popover is aligned to the **leading edge** with padding for better layout control.
+### Added
+- Added case-sensitive and exact match search functionality
+  - Added  and  properties to  class
+  - Created new  function to generate appropriate search predicates based on search preferences
+  - Connected UI toggles to the search manager via onChange handlers
 
-**Removed:**
-- The previous  with placeholder search options:
-  - Search by Name
-  - Search by Date
-  - Search by Tag
+### Changed
+- Modified search predicate generation in  to use the new configurable  function
+- Updated search query to respect user preferences for case sensitivity and exact matching
 
-**Improved:**
-- Refined the layout of the search options to use a popover, allowing a cleaner user experience for configuring search behavior.
-
+### Technical Details
+- Added support for different NSPredicate operators:
+  - Case-sensitive exact match: 
+  - Case-insensitive exact match: 
+  - Case-sensitive partial match: 
+  - Case-insensitive partial match: 
+- Added SwiftUI import to MetaDataSearchManager.swift to support @Published properties

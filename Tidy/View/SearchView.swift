@@ -29,7 +29,13 @@ struct SearchView: View {
 				.popover(isPresented: $showPopover, arrowEdge: .bottom) {
 					VStack(alignment: .leading, spacing: 10) {
 						Toggle("Case sensitive", isOn: $caseSensitive)
+							.onChange(of: caseSensitive) { oldValue, newValue in
+								searchManager.caseSensitive = newValue
+							}
 						Toggle("Exact match", isOn: $exactMatch)
+							.onChange(of: exactMatch) { oldValue, newValue in
+								searchManager.exactMatch = newValue
+							}
 					}
 					.padding(10)
 				}
