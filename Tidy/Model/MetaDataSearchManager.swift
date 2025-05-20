@@ -1,10 +1,9 @@
 import Foundation
 import SwiftUI
-import Cocoa
+
 
 // This class handles all NSMetadataQuery operations
 class MetadataSearchManager: ObservableObject {
-	var searchURL: URL? = nil
 	private var predicateString: String = "kMDItemContentTypeTree == 'public.folder' AND kMDItemDisplayName CONTAINS[cd] %@"
 	private var metadataQuery: NSMetadataQuery?
 	// Optional completion handler that will be called when search finishes
@@ -23,10 +22,10 @@ class MetadataSearchManager: ObservableObject {
 
 		if exactMatch {
 			// Exact match
-			operatorString = caseSensitive ? "==" : "==[cd]"  // Use '==' for exact match, with case-sensitivity '[c]' for case-insensitive
+			operatorString = caseSensitive ? "==" : "==[cd]"
 		} else {
 			// Partial match
-			operatorString = caseSensitive ? "CONTAINS" : "CONTAINS[cd]"  // 'CONTAINS' with or without case-sensitivity
+			operatorString = caseSensitive ? "CONTAINS" : "CONTAINS[cd]"
 		}
 
 		predicateString = "kMDItemContentTypeTree == 'public.folder' AND kMDItemDisplayName \(operatorString) %@"

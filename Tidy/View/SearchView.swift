@@ -5,6 +5,7 @@ struct SearchView: View {
 	@State private var folderName: String = ""
 	@State private var isSearching: Bool = false
 	@State private var showPopover = false
+	@Binding var selectedFolder: Set<String>
 	
 	//Search options toggle variable
 	@State private var caseSensitive: Bool = false
@@ -67,7 +68,7 @@ struct SearchView: View {
 					.stroke(Color.gray.opacity(0.4), lineWidth: 1)
 			)
 			
-			FolderSearchResultsView(searchResults: $searchManager.searchResult, isSearching: $isSearching)
+			FolderSearchResultsView(searchResults: $searchManager.searchResult, isSearching: $isSearching, selectedFolder: $selectedFolder)
 			
 			Spacer()
 		}
@@ -102,8 +103,7 @@ struct SearchView: View {
 	
 	private func performSearch() {
 		isSearching = true
-		let homeDirectory = FileManager.default.homeDirectoryForCurrentUser
-		searchManager.searchForFolders(inDirectory: homeDirectory, matching: folderName) { _ in
+		searchManager.searchForFolders(inDirectory: searchURL!, matching: folderName) { _ in
 			DispatchQueue.main.async {
 				isSearching = false
 			}
@@ -112,6 +112,6 @@ struct SearchView: View {
 }
 
 #Preview {
-	SearchView()
+	SearchView(selectedFolder: .constant(["/tripham/Desktop"]))
 }
 

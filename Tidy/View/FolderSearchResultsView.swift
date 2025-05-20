@@ -10,7 +10,7 @@ import SwiftUI
 struct FolderSearchResultsView: View {
 	@Binding var searchResults: [FolderEntry]
 	@Binding var isSearching: Bool
-	@State private var selectedEntries: Set<String> = []  // Track selected paths
+	@Binding var selectedFolder: Set<String>
 	
 	var body: some View {
 		if isSearching {
@@ -26,12 +26,13 @@ struct FolderSearchResultsView: View {
 						HStack {
 							Spacer()
 							Toggle(isOn: Binding<Bool>(
-								get: { selectedEntries.contains(item.path) },
+								get: {
+									selectedFolder.contains(item.path) },
 								set: { isChecked in
 									if isChecked {
-										selectedEntries.insert(item.path)
+										selectedFolder.insert(item.path)
 									} else {
-										selectedEntries.remove(item.path)
+										selectedFolder.remove(item.path)
 									}
 								}
 							)) {
@@ -58,7 +59,7 @@ struct FolderSearchResultsView: View {
 
 
 #Preview {
-	FolderSearchResultsView(searchResults: .constant([]), isSearching: .constant(false))
+	FolderSearchResultsView(searchResults: .constant([]), isSearching: .constant(false), selectedFolder: .constant([]))
 }
 
 

@@ -1,21 +1,23 @@
 # Changelog
 
-## [Unreleased] - 2025-05-02
+## [Unreleased] - 2025-05-20
 
 ### Added
-- Added case-sensitive and exact match search functionality
-  - Added  and  properties to  class
-  - Created new  function to generate appropriate search predicates based on search preferences
-  - Connected UI toggles to the search manager via onChange handlers
+- Added a Home button with a house icon to ContentView for switching to a home view.
+- Introduced a new ViewState case .home to manage current view states.
+- Added a PanelView() method in ContentView using @ViewBuilder to cleanly switch views.
+- Enabled selectedFolder binding passing through ContentView, SearchView, and FolderSearchResultsView to track folder selections across views.
 
 ### Changed
-- Modified search predicate generation in  to use the new configurable  function
-- Updated search query to respect user preferences for case sensitivity and exact matching
+- Changed initial currentView state in ContentView from .none to .home.
+- Refactored the ContentView body to replace if statement with a switch inside PanelView() for better readability and performance.
+- Removed unused import Cocoa in MetadataSearchManager.swift.
+- Simplified predicate string operator assignment in MetadataSearchManager.swift.
+- Updated FolderSearchResultsView to use a binding selectedFolder: Set<String> instead of a local state to allow external state management.
+- Updated SearchView to accept @Binding selectedFolder and pass it to FolderSearchResultsView.
+- Changed the home directory usage in SearchView’s performSearch() to use the dynamic searchURL instead of a hardcoded home directory.
 
-### Technical Details
-- Added support for different NSPredicate operators:
-  - Case-sensitive exact match: 
-  - Case-insensitive exact match: 
-  - Case-sensitive partial match: 
-  - Case-insensitive partial match: 
-- Added SwiftUI import to MetaDataSearchManager.swift to support @Published properties
+### Fixed
+- Fixed the issue with passing the selected folder state properly through views.
+- Fixed preview providers to pass realistic example data (e.g., selectedFolder: [/Users/tripham/Desktop]).
+
