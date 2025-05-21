@@ -23,11 +23,12 @@ struct FolderSearchResultsView: View {
 			ScrollView {
 				LazyVStack(alignment: .leading, spacing: 0) {
 					ForEach(Array(searchResults.enumerated()), id: \.element.path) { index, item in
+						let rowBackground = Color(index % 2 == 0
+								? NSColor.windowBackgroundColor
+								: NSColor.alternatingContentBackgroundColors[1])
 						HStack {
-							Spacer()
 							Toggle(isOn: Binding<Bool>(
-								get: {
-									selectedFolder.contains(item.path) },
+								get: { selectedFolder.contains(item.path) },
 								set: { isChecked in
 									if isChecked {
 										selectedFolder.insert(item.path)
@@ -39,24 +40,21 @@ struct FolderSearchResultsView: View {
 								EmptyView()
 							}
 							.labelsHidden()
+							.padding(.leading, 8)
 							
 							FolderEntryView(entry: item)
 						}
-						.background(index % 2 == 0 ?
-									Color(NSColor.windowBackgroundColor) :
-										Color(NSColor.alternatingContentBackgroundColors[1]))
+						.background(rowBackground)
 						.cornerRadius(4)
 					}
 				}
 			}
-			.frame(maxWidth: .infinity, maxHeight: .infinity)
 			.background(Color(NSColor.controlBackgroundColor))
 			.clipShape(RoundedRectangle(cornerRadius: 8))
 			.padding(5)
 		}
 	}
 }
-
 
 #Preview {
 	FolderSearchResultsView(searchResults: .constant([]), isSearching: .constant(false), selectedFolder: .constant([]))

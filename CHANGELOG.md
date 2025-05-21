@@ -1,23 +1,33 @@
-# Changelog
+# Tidy App Changelog
 
-## [Unreleased] - 2025-05-20
+## Version [Next Release] - May 21, 2025
 
 ### Added
-- Added a Home button with a house icon to ContentView for switching to a home view.
-- Introduced a new ViewState case .home to manage current view states.
-- Added a PanelView() method in ContentView using @ViewBuilder to cleanly switch views.
-- Enabled selectedFolder binding passing through ContentView, SearchView, and FolderSearchResultsView to track folder selections across views.
+- Added new Info.plist file to the project
+- Created new MainMenuView.swift to display selected folders
+- Added PBXFileSystemSynchronizedBuildFileExceptionSet section to exclude Info.plist from synchronization
+- Added alternating row background colors in the folder search results list
+- Added Equatable protocol conformance to FolderEntry struct
 
 ### Changed
-- Changed initial currentView state in ContentView from .none to .home.
-- Refactored the ContentView body to replace if statement with a switch inside PanelView() for better readability and performance.
-- Removed unused import Cocoa in MetadataSearchManager.swift.
-- Simplified predicate string operator assignment in MetadataSearchManager.swift.
-- Updated FolderSearchResultsView to use a binding selectedFolder: Set<String> instead of a local state to allow external state management.
-- Updated SearchView to accept @Binding selectedFolder and pass it to FolderSearchResultsView.
-- Changed the home directory usage in SearchView’s performSearch() to use the dynamic searchURL instead of a hardcoded home directory.
+- Modified project configuration to use the explicit Info.plist file path
+- Replaced the placeholder Home text with the new MainMenuView
+- Changed window size constraints:
+  - Reduced minimum width from 700px to 400px
+  - Reduced minimum height to 300px
+  - Removed ideal width/height constraints
+- Improved FolderEntryView's layout with proper alignment
+- Enhanced SearchView UI by removing unnecessary spacers
+- Updated the preview path in SearchView to use a more realistic example path (/Users/tripham/Desktop)
+- Added padding to checkboxes in search results for better spacing
 
 ### Fixed
-- Fixed the issue with passing the selected folder state properly through views.
-- Fixed preview providers to pass realistic example data (e.g., selectedFolder: [/Users/tripham/Desktop]).
+- Fixed a typo in the frame property: maxHeight: .infinitys should be .infinity
+- Improved UI alignment and spacing throughout the app
+- Optimized layout of multiple views by removing unnecessary Spacer() elements
 
+### UI Improvements
+- Better folder entry text alignment with explicit leading alignment
+- Improved search results rendering with alternating background colors
+- More compact and efficient use of space in multiple views
+- Cleaner search interface with optimized layout

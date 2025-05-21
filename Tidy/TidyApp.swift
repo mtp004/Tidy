@@ -9,12 +9,17 @@ import SwiftUI
 
 @main
 struct TidyApp: App {
-    let persistenceController = PersistenceController.shared
-
-    var body: some Scene {
-        WindowGroup {
+	var body: some Scene {
+		Window("Tidy", id: "main") {
 			ContentView()
-                .environment(\.managedObjectContext, persistenceController.container.viewContext)
-        }
-    }
+				.onAppear {
+					DispatchQueue.main.async {
+						if let window = NSApplication.shared.windows.first {
+							window.setContentSize(NSSize(width: 600, height: 400))
+						}
+					}
+				}
+		}
+		.windowResizability(.contentSize)
+	}
 }

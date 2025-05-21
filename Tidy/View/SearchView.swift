@@ -50,7 +50,6 @@ struct SearchView: View {
 						.onChange(of: folderName) { oldValue, newValue in
 							debounceSearch(for: newValue)
 						}
-					Spacer()
 				}
 				.padding(8)
 				.overlay(
@@ -61,7 +60,6 @@ struct SearchView: View {
 			}
 			.padding(.vertical, 5)
 			.padding(.horizontal, 10)
-			.frame(maxWidth: .infinity)
 			.background(Color.gray.opacity(0.2))
 			.overlay(
 				Rectangle()
@@ -112,6 +110,6 @@ struct SearchView: View {
 }
 
 #Preview {
-	SearchView(selectedFolder: .constant(["/tripham/Desktop"]))
+	SearchView(selectedFolder: .constant(["/Users/tripham/Desktop"]))
 }
 

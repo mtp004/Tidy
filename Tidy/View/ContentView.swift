@@ -27,11 +27,11 @@ struct ContentView: View {
 						.scaledToFit()
 						.frame(width: 24, height: 24)
 						.padding(8)
+						.background(Color.secondary)
+						.foregroundColor(.white)
+						.cornerRadius(10)
 				}
 				.buttonStyle(PlainButtonStyle())
-				.background(Color.secondary)
-				.foregroundColor(.white)
-				.cornerRadius(10)
 				.padding(5)
 				
 				Button(action: {
@@ -43,11 +43,11 @@ struct ContentView: View {
 						.scaledToFit()
 						.frame(width: 24, height: 24)
 						.padding(8)
+						.background(Color.secondary)
+						.foregroundColor(.white)
+						.cornerRadius(10)
 				}
 				.buttonStyle(PlainButtonStyle())
-				.background(Color.secondary)
-				.foregroundColor(.white)
-				.cornerRadius(10)
 				.padding(5)
 				
 				Spacer()
@@ -55,13 +55,12 @@ struct ContentView: View {
 			.frame(minWidth: 50, maxHeight: .infinity)
 			.padding(5)
 			.background(Color.black.opacity(0.1))
-			Spacer()
 			VStack {
 				PanelView()
 			}
 			.frame(maxWidth: .infinity, maxHeight: .infinity)
 		}
-		.frame(minWidth: 700, idealWidth: 700, maxWidth: .infinity, minHeight: 400, idealHeight: 400, maxHeight: .infinity)
+		.frame(minWidth: 400, minHeight: 300)
 	}
 	
 	@ViewBuilder
@@ -70,7 +69,7 @@ struct ContentView: View {
 		case .search:
 			SearchView(selectedFolder: $selectedFolder)
 		case .home:
-			Text("Home")
+			MainMenuView(selectedFolder: $selectedFolder)
 		}
 	}
 }

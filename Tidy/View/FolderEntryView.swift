@@ -8,7 +8,7 @@
 import Foundation
 import SwiftUI
 
-struct FolderEntry: Identifiable {
+struct FolderEntry: Identifiable, Equatable {
 	var id: String{path}
 	let name: String
 	let path: String
@@ -36,11 +36,9 @@ struct FolderEntryView: View {
 					.lineLimit(1)
 					.truncationMode(.middle)
 			}
-			
-			Spacer() // Pushes content to the left
 		}
 		.padding(10)
-		.frame(maxWidth: .infinity)
+		.frame(maxWidth: .infinity, alignment: .leading)
 	}
 }
 

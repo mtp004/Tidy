@@ -29,9 +29,22 @@
 		E57327932D962B01000B0D04 /* TidyUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TidyUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		E54C0C2B2DDD5DA1007F8185 /* Exceptions for "Tidy" folder in "Tidy" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = E57327722D962AFF000B0D04 /* Tidy */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		E57327752D962AFF000B0D04 /* Tidy */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				E54C0C2B2DDD5DA1007F8185 /* Exceptions for "Tidy" folder in "Tidy" target */,
+			);
 			path = Tidy;
 			sourceTree = "<group>";
 		};
@@ -401,6 +414,7 @@
 				DEVELOPMENT_TEAM = 5FSYX2QT8A;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Tidy/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -428,6 +442,7 @@
 				DEVELOPMENT_TEAM = 5FSYX2QT8A;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = Tidy/Info.plist;
 				INFOPLIST_KEY_NSHumanReadableCopyright = "";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
