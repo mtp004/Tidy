@@ -8,39 +8,56 @@
 import SwiftUI
 
 struct MainMenuView: View {
-	@Binding var selectedFolder: Set<String>
-	
+	@Binding var selectedFolderEntry: [FolderEntry]
+
 	var body: some View {
 		VStack(alignment: .leading, spacing: 10) {
 			Text("Selected Folders:")
 				.font(.headline)
-			
-			if selectedFolder.isEmpty {
+
+			if selectedFolderEntry.isEmpty {
 				Text("No folders selected.")
 					.foregroundColor(.gray)
 			} else {
 				ScrollView {
 					VStack(alignment: .leading, spacing: 8) {
-						ForEach(Array(selectedFolder), id: \.self) { path in
-							Text(path)
-								.font(.body)
-								.lineLimit(1)
-								.truncationMode(.middle)
+						ForEach(selectedFolderEntry) { entry in
+							HStack {
+								FolderEntryView(entry: entry)
+								Spacer()
+								Button(action: {
+									remove(entry: entry)
+								}) {
+									Image(systemName: "xmark.circle.fill")
+										.foregroundColor(.red)
+										.font(.title3)
+								}
+								.buttonStyle(PlainButtonStyle())
+							}
+							.background(Color.gray.opacity(0.05))
+							.cornerRadius(8)
 						}
 					}
 				}
-				.frame(maxHeight: 200) // limit height of scroll view
+				.frame(maxHeight: 200)
 			}
 		}
 		.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
 		.padding()
 	}
+
+	private func remove(entry: FolderEntry) {
+		selectedFolderEntry.removeAll { $0 == entry }
+	}
 }
 
+
 #Preview {
-	MainMenuView(selectedFolder: .constant([
-		"/Users/tripham/Desktop",
-		"/Users/tripham/Documents/ProjectX",
-		"/Users/tripham/Downloads"
-	]))
+	MainMenuView(
+		selectedFolderEntry: .constant([
+			FolderEntry(name: "Desktop", path: "/Users/tripham/Desktop"),
+			FolderEntry(name: "ProjectX", path: "/Users/tripham/Documents/ProjectX"),
+			FolderEntry(name: "Downloads", path: "/Users/tripham/Downloads")
+		])
+	)
 }

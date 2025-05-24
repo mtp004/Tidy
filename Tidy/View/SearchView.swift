@@ -5,7 +5,6 @@ struct SearchView: View {
 	@State private var folderName: String = ""
 	@State private var isSearching: Bool = false
 	@State private var showPopover = false
-	@Binding var selectedFolder: Set<String>
 	
 	//Search options toggle variable
 	@State private var caseSensitive: Bool = false
@@ -13,6 +12,8 @@ struct SearchView: View {
 	@StateObject private var searchManager = MetadataSearchManager()
 	
 	@State private var debounceSearchWorkItem: DispatchWorkItem?
+	
+	@Binding var selectedFolderEntry: [FolderEntry]
 	
 	var body: some View {
 		VStack(spacing: 5) {
@@ -66,7 +67,7 @@ struct SearchView: View {
 					.stroke(Color.gray.opacity(0.4), lineWidth: 1)
 			)
 			
-			FolderSearchResultsView(searchResults: $searchManager.searchResult, isSearching: $isSearching, selectedFolder: $selectedFolder)
+			FolderSearchResultsView(searchResults: $searchManager.searchResult, isSearching: $isSearching, selectedFolderEntry: $selectedFolderEntry)
 			
 			Spacer()
 		}
@@ -110,6 +111,8 @@ struct SearchView: View {
 }
 
 #Preview {
-	SearchView(selectedFolder: .constant(["/Users/tripham/Desktop"]))
+	SearchView(selectedFolderEntry: .constant(
+		[FolderEntry(name: "Desktop", path: "/Users/tripham/Desktop")]
+	   ))
 }
 

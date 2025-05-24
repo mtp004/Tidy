@@ -14,12 +14,12 @@ enum ViewState {
 
 struct ContentView: View {
 	@State private var currentView: ViewState = .home
-	@State var selectedFolder: Set<String> = []
+	@State var selectedFolderEntry: [FolderEntry] = []
+	
 	var body: some View {
 		HStack {
 			VStack(spacing: 5) {
 				Button(action: {
-					// Toggle between states
 					currentView = .home
 				}) {
 					Image(systemName: "house")
@@ -35,7 +35,6 @@ struct ContentView: View {
 				.padding(5)
 				
 				Button(action: {
-					// Toggle between states
 					currentView = .search
 				}) {
 					Image(systemName: "magnifyingglass")
@@ -55,6 +54,7 @@ struct ContentView: View {
 			.frame(minWidth: 50, maxHeight: .infinity)
 			.padding(5)
 			.background(Color.black.opacity(0.1))
+			
 			VStack {
 				PanelView()
 			}
@@ -67,13 +67,21 @@ struct ContentView: View {
 	func PanelView() -> some View {
 		switch currentView {
 		case .search:
-			SearchView(selectedFolder: $selectedFolder)
+			SearchView(
+				selectedFolderEntry: $selectedFolderEntry
+			)
 		case .home:
-			MainMenuView(selectedFolder: $selectedFolder)
+			MainMenuView(
+				selectedFolderEntry: $selectedFolderEntry
+			)
 		}
 	}
 }
 
 #Preview {
-	ContentView(selectedFolder: ["/Users/tripham/Desktop"])
+	ContentView(
+		selectedFolderEntry: [
+			FolderEntry(name: "Desktop", path: "/Users/tripham/Desktop")
+		]
+	)
 }
