@@ -1,33 +1,51 @@
-# Tidy App Changelog
+# Changelog - Tidy App
 
-## Version [Next Release] - May 21, 2025
+## [Unreleased] - 2025-05-25
 
 ### Added
-- Added new Info.plist file to the project
-- Created new MainMenuView.swift to display selected folders
-- Added PBXFileSystemSynchronizedBuildFileExceptionSet section to exclude Info.plist from synchronization
-- Added alternating row background colors in the folder search results list
-- Added Equatable protocol conformance to FolderEntry struct
+- **New FolderAttribute Model**: Introduced  class to replace simple  arrays
+ - Added support for file type deletion preferences (images, documents, videos)
+ - Implemented  protocol for reactive UI updates
+ - Each folder now has configurable deletion settings per file type
+
+- **New FolderAttributeView Component**: Created dedicated view for displaying folder attributes
+ - Visual folder icon and path display
+ - Interactive toggle buttons for file type deletion settings
+ - Color-coded buttons (red when active, gray when inactive)
+ - Clean, compact layout with proper text truncation
 
 ### Changed
-- Modified project configuration to use the explicit Info.plist file path
-- Replaced the placeholder Home text with the new MainMenuView
-- Changed window size constraints:
-  - Reduced minimum width from 700px to 400px
-  - Reduced minimum height to 300px
-  - Removed ideal width/height constraints
-- Improved FolderEntryView's layout with proper alignment
-- Enhanced SearchView UI by removing unnecessary spacers
-- Updated the preview path in SearchView to use a more realistic example path (/Users/tripham/Desktop)
-- Added padding to checkboxes in search results for better spacing
+- **Refactored Data Structure**: Migrated from  array to  dictionary
+ - Uses folder path as key for efficient lookups and duplicate prevention
+ - Improved data consistency across all views
 
-### Fixed
-- Fixed a typo in the frame property: maxHeight: .infinitys should be .infinity
-- Improved UI alignment and spacing throughout the app
-- Optimized layout of multiple views by removing unnecessary Spacer() elements
+- **Updated ContentView**: 
+ - Changed  binding to  with new dictionary structure
+ - Updated preview data to demonstrate new folder attributes functionality
 
-### UI Improvements
-- Better folder entry text alignment with explicit leading alignment
-- Improved search results rendering with alternating background colors
-- More compact and efficient use of space in multiple views
-- Cleaner search interface with optimized layout
+- **Enhanced MainMenuView**:
+ - Redesigned to display  components instead of basic 
+ - Added smooth animations for folder addition/removal
+ - Improved layout with better spacing and visual hierarchy
+ - Increased maximum height for folder list (200px → 300px)
+
+- **Improved FolderSearchResultsView**:
+ - Simplified toggle logic using dictionary-based selection
+ - Removed complex initialization and state management
+ - Cleaner folder selection/deselection with automatic  creation
+ - Updated preview with realistic sample data
+
+- **Enhanced SearchView**:
+ - Updated to work with new dictionary-based folder selection
+ - Added null safety check for 
+ - Improved preview data with diverse folder attributes
+
+### Removed
+- **Cleaned up FolderEntryView**: Removed unused  state variable
+- **Simplified Architecture**: Eliminated complex state synchronization between multiple selection arrays
+
+### Technical Improvements
+- Better memory management with dictionary-based lookups
+- Reduced code complexity in selection state management
+- Enhanced type safety with structured folder attributes
+- Improved UI responsiveness with  integration

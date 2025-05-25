@@ -10,19 +10,7 @@ import SwiftUI
 struct FolderSearchResultsView: View {
 	@Binding var searchResults: [FolderEntry]
 	@Binding var isSearching: Bool
-	@State private var selectedFolder: Set<String>
-	@Binding var selectedFolderEntry: [FolderEntry]
-	
-	// Custom initializer
-	init(searchResults: Binding<[FolderEntry]>, isSearching: Binding<Bool>, selectedFolderEntry: Binding<[FolderEntry]>) {
-		self._searchResults = searchResults
-		self._isSearching = isSearching
-		self._selectedFolderEntry = selectedFolderEntry
-		
-		// Initialize selectedFolder set from selectedFolderEntry paths
-		let initialSelectedPaths = Set(selectedFolderEntry.wrappedValue.map { $0.path })
-		self._selectedFolder = State(initialValue: initialSelectedPaths)
-	}
+	@Binding var selectedEntry: [String: FolderAttribute]
 	
 	var body: some View {
 		if isSearching {
@@ -38,18 +26,18 @@ struct FolderSearchResultsView: View {
 						let rowBackground = Color(index % 2 == 0
 												  ? NSColor.windowBackgroundColor
 												  : NSColor.alternatingContentBackgroundColors[1])
+						
 						HStack {
 							Toggle(isOn: Binding<Bool>(
-								get: { selectedFolder.contains(item.path) },
+								get: {
+									selectedEntry[item.path] != nil
+								},
 								set: { isChecked in
 									if isChecked {
-										selectedFolder.insert(item.path)
-										if !selectedFolderEntry.contains(where: { $0.path == item.path }) {
-											selectedFolderEntry.append(item)
-										}
+										let attribute = FolderAttribute(name: item.name, path: item.path)
+										selectedEntry[item.path] = attribute
 									} else {
-										selectedFolder.remove(item.path)
-										selectedFolderEntry.removeAll { $0.path == item.path }
+										selectedEntry.removeValue(forKey: item.path)
 									}
 								}
 							)) {
@@ -73,7 +61,19 @@ struct FolderSearchResultsView: View {
 }
 
 #Preview {
-	FolderSearchResultsView(searchResults: .constant([]), isSearching: .constant(false), selectedFolderEntry: .constant([]))
+	FolderSearchResultsView(
+		searchResults: .constant([
+			FolderEntry(name: "Desktop", path: "/Users/tripham/Desktop"),
+			FolderEntry(name: "Downloads", path: "/Users/tripham/Downloads"),
+			FolderEntry(name: "ProjectX", path: "/Users/tripham/Documents/ProjectX")
+		]),
+		isSearching: .constant(false),
+		selectedEntry: .constant([
+			"/Users/tripham/Desktop": FolderAttribute(name: "Desktop", path: "/Users/tripham/Desktop", deleteImage: true),
+			"/Users/tripham/Documents/ProjectX": FolderAttribute(name: "ProjectX", path: "/Users/tripham/Documents/ProjectX", deleteDocument: true)
+		])
+	)
 }
+
 
 

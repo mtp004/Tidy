@@ -8,25 +8,26 @@
 import SwiftUI
 
 struct MainMenuView: View {
-	@Binding var selectedFolderEntry: [FolderEntry]
-
+	@Binding var selectedEntry: [String: FolderAttribute]
+	
 	var body: some View {
-		VStack(alignment: .leading, spacing: 10) {
-			Text("Selected Folders:")
+		VStack(alignment: .leading, spacing: 5) {
+			Text("Selected Folders")
 				.font(.headline)
-
-			if selectedFolderEntry.isEmpty {
+			
+			if selectedEntry.isEmpty {
 				Text("No folders selected.")
 					.foregroundColor(.gray)
 			} else {
 				ScrollView {
-					VStack(alignment: .leading, spacing: 8) {
-						ForEach(selectedFolderEntry) { entry in
-							HStack {
-								FolderEntryView(entry: entry)
-								Spacer()
+					VStack(alignment: .leading, spacing: 5) {
+						ForEach(Array(selectedEntry.values).sorted(by: { $0.path < $1.path })) { attr in
+							HStack(alignment: .top) {
+								FolderAttributeView(attribute: attr)
+								
 								Button(action: {
-									remove(entry: entry)
+									selectedEntry.removeValue(forKey: attr.path)
+									
 								}) {
 									Image(systemName: "xmark.circle.fill")
 										.foregroundColor(.red)
@@ -34,30 +35,27 @@ struct MainMenuView: View {
 								}
 								.buttonStyle(PlainButtonStyle())
 							}
-							.background(Color.gray.opacity(0.05))
+							.background(Color.gray.opacity(0.1))
 							.cornerRadius(8)
+							.transition(.move(edge: .trailing).combined(with: .opacity))
 						}
 					}
+					.animation(.easeInOut(duration: 0.5), value: selectedEntry.count)
 				}
-				.frame(maxHeight: 200)
+				.frame(maxHeight: 300)
 			}
 		}
 		.frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
-		.padding()
-	}
-
-	private func remove(entry: FolderEntry) {
-		selectedFolderEntry.removeAll { $0 == entry }
+		.padding(10)
 	}
 }
-
 
 #Preview {
-	MainMenuView(
-		selectedFolderEntry: .constant([
-			FolderEntry(name: "Desktop", path: "/Users/tripham/Desktop"),
-			FolderEntry(name: "ProjectX", path: "/Users/tripham/Documents/ProjectX"),
-			FolderEntry(name: "Downloads", path: "/Users/tripham/Downloads")
-		])
-	)
+	@Previewable @State var sampleFolders: [String: FolderAttribute] = [
+		"/Users/tripham/Desktop": FolderAttribute(name: "Desktop", path: "/Users/tripham/Desktop"),
+		"/Users/tripham/Documents/ProjectX": FolderAttribute(name: "ProjectX", path: "/Users/tripham/Documents/ProjectXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		"/Users/tripham/Downloads": FolderAttribute(name: "Downloads", path: "/Users/tripham/Downloads")
+	]
+	return MainMenuView(selectedEntry: $sampleFolders)
 }
+

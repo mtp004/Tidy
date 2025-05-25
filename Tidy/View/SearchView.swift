@@ -13,7 +13,7 @@ struct SearchView: View {
 	
 	@State private var debounceSearchWorkItem: DispatchWorkItem?
 	
-	@Binding var selectedFolderEntry: [FolderEntry]
+	@Binding var selectedEntry: [String: FolderAttribute]
 	
 	var body: some View {
 		VStack(spacing: 5) {
@@ -67,7 +67,7 @@ struct SearchView: View {
 					.stroke(Color.gray.opacity(0.4), lineWidth: 1)
 			)
 			
-			FolderSearchResultsView(searchResults: $searchManager.searchResult, isSearching: $isSearching, selectedFolderEntry: $selectedFolderEntry)
+			FolderSearchResultsView(searchResults: $searchManager.searchResult, isSearching: $isSearching, selectedEntry: $selectedEntry)
 			
 			Spacer()
 		}
@@ -102,7 +102,11 @@ struct SearchView: View {
 	
 	private func performSearch() {
 		isSearching = true
-		searchManager.searchForFolders(inDirectory: searchURL!, matching: folderName) { _ in
+		guard let searchURL = searchURL else {
+			isSearching = false
+			return
+		}
+		searchManager.searchForFolders(inDirectory: searchURL, matching: folderName) { _ in
 			DispatchQueue.main.async {
 				isSearching = false
 			}
@@ -111,8 +115,9 @@ struct SearchView: View {
 }
 
 #Preview {
-	SearchView(selectedFolderEntry: .constant(
-		[FolderEntry(name: "Desktop", path: "/Users/tripham/Desktop")]
-	   ))
+	SearchView(selectedEntry: .constant([
+		"/Users/tripham/Desktop": FolderAttribute(name: "Desktop", path: "/Users/tripham/Desktop"),
+		"/Users/tripham/Downloads": FolderAttribute(name: "Downloads", path: "/Users/tripham/Downloads", deleteImage: true),
+		"/Users/tripham/Documents/ProjectX": FolderAttribute(name: "ProjectX", path: "/Users/tripham/Documents/ProjectX", deleteDocument: true)
+	]))
 }
-
