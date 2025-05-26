@@ -13,7 +13,7 @@ struct MainMenuView: View {
 	var body: some View {
 		VStack(alignment: .leading, spacing: 5) {
 			Text("Selected Folders")
-				.font(.headline)
+				.font(.title2)
 			
 			if selectedEntry.isEmpty {
 				Text("No folders selected.")
@@ -21,7 +21,7 @@ struct MainMenuView: View {
 			} else {
 				ScrollView {
 					VStack(alignment: .leading, spacing: 5) {
-						ForEach(Array(selectedEntry.values).sorted(by: { $0.path < $1.path })) { attr in
+						ForEach(selectedEntry.values.sorted(by: { $0.path < $1.path })) { attr in
 							HStack(alignment: .top) {
 								FolderAttributeView(attribute: attr)
 								
@@ -53,7 +53,7 @@ struct MainMenuView: View {
 #Preview {
 	@Previewable @State var sampleFolders: [String: FolderAttribute] = [
 		"/Users/tripham/Desktop": FolderAttribute(name: "Desktop", path: "/Users/tripham/Desktop"),
-		"/Users/tripham/Documents/ProjectX": FolderAttribute(name: "ProjectX", path: "/Users/tripham/Documents/ProjectXxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"),
+		"/Users/tripham/Documents/ProjectX": FolderAttribute(name: "ProjectX", path: "/Users/tripham/Documents/ProjectX"),
 		"/Users/tripham/Downloads": FolderAttribute(name: "Downloads", path: "/Users/tripham/Downloads")
 	]
 	return MainMenuView(selectedEntry: $sampleFolders)

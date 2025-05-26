@@ -2,9 +2,13 @@ import SwiftUI
 
 struct FolderAttributeView: View {
 	@ObservedObject var attribute: FolderAttribute
-
+	
+	@State private var showImageExtensionPopover = false
+	@State private var showDocumentExtensionPopover = false
+	@State private var showVideoExtensionPopover = false
+	
 	var body: some View {
-		VStack(alignment: .leading){
+		VStack(alignment: .leading) {
 			HStack {
 				Image(systemName: "folder.fill")
 					.font(.title2)
@@ -25,40 +29,39 @@ struct FolderAttributeView: View {
 				
 				Spacer()
 				
-				HStack(alignment: .bottom,spacing: 8) {
-					toggleButton(
+				HStack(alignment: .bottom, spacing: 8) {
+					ExtensionTogglePopoverButton(
 						icon: "photo",
-						active: attribute.deleteImage
-					) { attribute.deleteImage.toggle() }
-
-					toggleButton(
+						isActive: attribute.shouldDeleteImage,
+						toggleAction: { attribute.shouldDeleteImage.toggle() },
+						isPopoverShown: $showImageExtensionPopover,
+						popoverTitle: "Image File Types",
+						extensions: attribute.imageFileExtensions
+					)
+					
+					ExtensionTogglePopoverButton(
 						icon: "doc.text",
-						active: attribute.deleteDocument
-					) { attribute.deleteDocument.toggle() }
-
-					toggleButton(
-						icon: "video",
-						active: attribute.deleteVideo
-					) { attribute.deleteVideo.toggle() }
+						isActive: attribute.shouldDeleteDocument,
+						toggleAction: { attribute.shouldDeleteDocument.toggle() },
+						isPopoverShown: $showDocumentExtensionPopover,
+						popoverTitle: "Document File Types",
+						extensions: attribute.documentFileExtensions
+					)
+					
+					ExtensionTogglePopoverButton(
+						icon: "play.rectangle.fill",
+						isActive: attribute.shouldDeleteVideo,
+						toggleAction: { attribute.shouldDeleteVideo.toggle() },
+						isPopoverShown: $showVideoExtensionPopover,
+						popoverTitle: "Video File Types",
+						extensions: attribute.videoFileExtensions
+					)
 				}
 				.padding(5)
 			}
 			.padding(10)
 			.frame(maxWidth: .infinity, alignment: .leading)
 		}
-	}
-	
-	@ViewBuilder
-	private func toggleButton(icon: String, active: Bool, action: @escaping () -> Void) -> some View {
-		Button(action: action) {
-			Image(systemName: icon)
-				.font(.system(size: 14, weight: .bold))
-				.padding(10)
-				.background(active ? Color.red.opacity(0.8) : Color.gray.opacity(0.2))
-				.foregroundColor(active ? .white : .primary)
-				.clipShape(Circle())
-		}
-		.buttonStyle(PlainButtonStyle())
 	}
 }
 
