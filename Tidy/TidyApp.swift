@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct TidyApp: App {
+	@StateObject private var appData = AppData()
+	@Environment(\.scenePhase) private var scenePhase
+	
 	var body: some Scene {
 		Window("Tidy", id: "main") {
-			ContentView()
+			ContentView(selectedEntry: $appData.folderData)
 				.onAppear {
 					DispatchQueue.main.async {
 						if let window = NSApplication.shared.windows.first {
@@ -21,5 +24,10 @@ struct TidyApp: App {
 				}
 		}
 		.windowResizability(.contentSize)
+		.onChange(of: scenePhase) { _, newPhase in
+			if newPhase == .inactive || newPhase == .background {
+				appData.save()
+			}
+		}
 	}
 }

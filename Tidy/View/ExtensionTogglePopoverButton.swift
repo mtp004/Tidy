@@ -2,34 +2,33 @@ import SwiftUI
 
 struct ExtensionTogglePopoverButton: View {
 	let icon: String
-	let isActive: Bool
-	let toggleAction: () -> Void
+	@ObservedObject var fileCategory: FileCategory
 	@Binding var isPopoverShown: Bool
 	let popoverTitle: String
-	let extensions: [FileExtension]
 	
 	var body: some View {
+		let extensionBinding = $fileCategory.extensions
 		HStack(spacing: 1) {
-			// Toggle button
-			Button(action: toggleAction) {
+			Button(action: {
+				fileCategory.shouldDelete.toggle()
+			}) {
 				Image(systemName: icon)
 					.font(.system(size: 14, weight: .bold))
 					.padding(10)
-					.background(isActive ? Color.red.opacity(0.8) : Color.gray.opacity(0.2))
-					.foregroundColor(isActive ? .white : .primary)
+					.background(fileCategory.shouldDelete ? Color.red.opacity(0.8) : Color.gray.opacity(0.2))
+					.foregroundColor(fileCategory.shouldDelete ? .white : .primary)
 					.clipShape(Circle())
 			}
 			.buttonStyle(PlainButtonStyle())
 			
-			// Arrow button with popover
 			Button {
 				isPopoverShown.toggle()
 			} label: {
 				Image(systemName: "chevron.down")
-						.font(.system(size: 14, weight: .semibold))
-						.foregroundColor(.primary)
-						.frame(width: 15, height: 25)
-						.contentShape(Rectangle())
+					.font(.system(size: 14, weight: .semibold))
+					.foregroundColor(.primary)
+					.frame(width: 15, height: 25)
+					.contentShape(Rectangle())
 			}
 			.buttonStyle(PlainButtonStyle())
 			.popover(isPresented: $isPopoverShown, arrowEdge: .bottom) {
@@ -39,22 +38,14 @@ struct ExtensionTogglePopoverButton: View {
 					
 					Divider()
 					
-					ForEach(extensions) { fileExtension in
-						ExtensionToggleRow(fileExtension: fileExtension)
+					ForEach(extensionBinding) { $fileExtension in
+						Toggle(fileExtension.name, isOn: $fileExtension.isEnabled)
 					}
 				}
 				.padding()
 				.frame(width: 220)
 			}
 		}
-	}
-}
-
-struct ExtensionToggleRow: View {
-	@ObservedObject var fileExtension: FileExtension
-	
-	var body: some View {
-		Toggle(fileExtension.name, isOn: $fileExtension.isEnabled)
 	}
 }
 

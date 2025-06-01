@@ -115,9 +115,14 @@ struct SearchView: View {
 }
 
 #Preview {
-	SearchView(selectedEntry: .constant([
-		"/Users/tripham/Desktop": FolderAttribute(name: "Desktop", path: "/Users/tripham/Desktop"),
-		"/Users/tripham/Downloads": FolderAttribute(name: "Downloads", path: "/Users/tripham/Downloads", deleteImage: true),
-		"/Users/tripham/Documents/ProjectX": FolderAttribute(name: "ProjectX", path: "/Users/tripham/Documents/ProjectX", deleteDocument: true)
+	// Create FolderAttribute instances
+	let desktopAttr = FolderAttribute(name: "Desktop", path: "/Users/tripham/Desktop")
+	let downloadsAttr = FolderAttribute(name: "Downloads", path: "/Users/tripham/Downloads")
+	let projectXAttr = FolderAttribute(name: "ProjectX", path: "/Users/tripham/Documents/ProjectX")
+
+	return SearchView(selectedEntry: .constant([
+		"/Users/tripham/Desktop": desktopAttr,
+		"/Users/tripham/Downloads": downloadsAttr,
+		"/Users/tripham/Documents/ProjectX": projectXAttr
 	]))
 }

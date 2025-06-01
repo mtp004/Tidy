@@ -30,32 +30,32 @@ struct FolderAttributeView: View {
 				Spacer()
 				
 				HStack(alignment: .bottom, spacing: 8) {
-					ExtensionTogglePopoverButton(
-						icon: "photo",
-						isActive: attribute.shouldDeleteImage,
-						toggleAction: { attribute.shouldDeleteImage.toggle() },
-						isPopoverShown: $showImageExtensionPopover,
-						popoverTitle: "Image File Types",
-						extensions: attribute.imageFileExtensions
-					)
+					if let imageCategory = attribute.fileCategories[.image] {
+						ExtensionTogglePopoverButton(
+							icon: "photo",
+							fileCategory: imageCategory,
+							isPopoverShown: $showImageExtensionPopover,
+							popoverTitle: "Image File Types"
+						)
+					}
 					
-					ExtensionTogglePopoverButton(
-						icon: "doc.text",
-						isActive: attribute.shouldDeleteDocument,
-						toggleAction: { attribute.shouldDeleteDocument.toggle() },
-						isPopoverShown: $showDocumentExtensionPopover,
-						popoverTitle: "Document File Types",
-						extensions: attribute.documentFileExtensions
-					)
+					if let docCategory = attribute.fileCategories[.document] {
+						ExtensionTogglePopoverButton(
+							icon: "doc.text",
+							fileCategory: docCategory,
+							isPopoverShown: $showDocumentExtensionPopover,
+							popoverTitle: "Document File Types"
+						)
+					}
 					
-					ExtensionTogglePopoverButton(
-						icon: "play.rectangle.fill",
-						isActive: attribute.shouldDeleteVideo,
-						toggleAction: { attribute.shouldDeleteVideo.toggle() },
-						isPopoverShown: $showVideoExtensionPopover,
-						popoverTitle: "Video File Types",
-						extensions: attribute.videoFileExtensions
-					)
+					if let videoCategory = attribute.fileCategories[.video] {
+						ExtensionTogglePopoverButton(
+							icon: "play.rectangle.fill",
+							fileCategory: videoCategory,
+							isPopoverShown: $showVideoExtensionPopover,
+							popoverTitle: "Video File Types"
+						)
+					}
 				}
 				.padding(5)
 			}
@@ -67,7 +67,6 @@ struct FolderAttributeView: View {
 
 #Preview {
 	@Previewable @StateObject var attr = FolderAttribute(name: "Desktop", path: "/tripham/Desktop")
-	
-	return FolderAttributeView(attribute: attr)
+	FolderAttributeView(attribute: attr)
 }
 

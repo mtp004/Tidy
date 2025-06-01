@@ -14,7 +14,7 @@ enum ViewState {
 
 struct ContentView: View {
 	@State private var currentView: ViewState = .home
-	@State var selectedEntry: [String: FolderAttribute] = [:]
+	@Binding var selectedEntry: [String: FolderAttribute]
 	
 	var body: some View {
 		HStack {
@@ -78,10 +78,11 @@ struct ContentView: View {
 
 #Preview {
 	ContentView(
-		selectedEntry: [
+		selectedEntry: .constant([
 			"/Users/tripham/Desktop": FolderAttribute(name: "Desktop", path: "/Users/tripham/Desktop"),
-			"/Users/tripham/Downloads": FolderAttribute(name: "Downloads", path: "/Users/tripham/Downloads", deleteImage: true),
-		]
+			"/Users/tripham/Downloads": FolderAttribute(name: "Downloads", path: "/Users/tripham/Downloads")
+		])
 	)
 }
+
 

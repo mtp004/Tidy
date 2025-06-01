@@ -69,11 +69,12 @@ struct FolderSearchResultsView: View {
 		]),
 		isSearching: .constant(false),
 		selectedEntry: .constant([
-			"/Users/tripham/Desktop": FolderAttribute(name: "Desktop", path: "/Users/tripham/Desktop", deleteImage: true),
-			"/Users/tripham/Documents/ProjectX": FolderAttribute(name: "ProjectX", path: "/Users/tripham/Documents/ProjectX", deleteDocument: true)
+			"/Users/tripham/Desktop": FolderAttribute(name: "Desktop", path: "/Users/tripham/Desktop"),
+			"/Users/tripham/Documents/ProjectX": FolderAttribute(name: "ProjectX", path: "/Users/tripham/Documents/ProjectX")
 		])
 	)
 }
+
 
 
 

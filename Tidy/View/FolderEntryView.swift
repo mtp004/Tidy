@@ -8,8 +8,8 @@
 import Foundation
 import SwiftUI
 
-struct FolderEntry: Identifiable, Equatable {
-	var id: String{path}
+struct FolderEntry: Identifiable {
+	var id = UUID()
 	let name: String
 	let path: String
 }
