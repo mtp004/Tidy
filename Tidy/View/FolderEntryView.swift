@@ -9,8 +9,7 @@ import Foundation
 import SwiftUI
 
 struct FolderEntry: Identifiable {
-	var id = UUID()
-	let name: String
+	let id: String
 	let path: String
 }
 
@@ -25,7 +24,7 @@ struct FolderEntryView: View {
 				.padding(.trailing, 4)
 			
 			VStack(alignment: .leading, spacing: 4) {
-				Text(entry.name)
+				Text(entry.id)
 					.font(.headline)
 					.lineLimit(1)
 					.truncationMode(.tail)
@@ -42,5 +41,5 @@ struct FolderEntryView: View {
 }
 
 #Preview {
-	FolderEntryView(entry: .init(name: "Desktop", path: "/tripham/Destkop"))
+	FolderEntryView(entry: .init(id: "Desktop", path: "/tripham/Destkop"))
 }

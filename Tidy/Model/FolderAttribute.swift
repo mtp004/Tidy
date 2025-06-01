@@ -7,12 +7,11 @@ enum FileCategoryType: String, Codable, Hashable {
 }
 
 struct FileExtension: Identifiable, Codable {
-	let id = UUID()
-	let name: String
+	let id: String
 	var isEnabled: Bool
 	
 	enum CodingKeys: String, CodingKey {
-		case name, isEnabled
+		case id, isEnabled
 	}
 }
 
@@ -52,7 +51,6 @@ class FolderAttribute: ObservableObject, Identifiable, Codable {
 	var path: String
 	@Published var fileCategories: [FileCategoryType: FileCategory] = [:]
 	
-	// Your existing init stays the same
 	init(name: String, path: String) {
 		self.name = name
 		self.path = path
@@ -62,41 +60,41 @@ class FolderAttribute: ObservableObject, Identifiable, Codable {
 				id: .image,
 				shouldDelete: false,
 				extensions: [
-					FileExtension(name: "jpg", isEnabled: true),
-					FileExtension(name: "jpeg", isEnabled: true),
-					FileExtension(name: "png", isEnabled: true),
-					FileExtension(name: "gif", isEnabled: true),
-					FileExtension(name: "bmp", isEnabled: true),
-					FileExtension(name: "tiff", isEnabled: true),
-					FileExtension(name: "heic", isEnabled: true)
+					FileExtension(id: "jpg", isEnabled: true),
+					FileExtension(id: "jpeg", isEnabled: true),
+					FileExtension(id: "png", isEnabled: true),
+					FileExtension(id: "gif", isEnabled: true),
+					FileExtension(id: "bmp", isEnabled: true),
+					FileExtension(id: "tiff", isEnabled: true),
+					FileExtension(id: "heic", isEnabled: true)
 				]
 			),
 			.document: FileCategory(
 				id: .document,
 				shouldDelete: false,
 				extensions: [
-					FileExtension(name: "pdf", isEnabled: true),
-					FileExtension(name: "doc", isEnabled: true),
-					FileExtension(name: "docx", isEnabled: true),
-					FileExtension(name: "txt", isEnabled: true),
-					FileExtension(name: "rtf", isEnabled: true),
-					FileExtension(name: "xls", isEnabled: true),
-					FileExtension(name: "xlsx", isEnabled: true),
-					FileExtension(name: "ppt", isEnabled: true),
-					FileExtension(name: "pptx", isEnabled: true)
+					FileExtension(id: "pdf", isEnabled: true),
+					FileExtension(id: "doc", isEnabled: true),
+					FileExtension(id: "docx", isEnabled: true),
+					FileExtension(id: "txt", isEnabled: true),
+					FileExtension(id: "rtf", isEnabled: true),
+					FileExtension(id: "xls", isEnabled: true),
+					FileExtension(id: "xlsx", isEnabled: true),
+					FileExtension(id: "ppt", isEnabled: true),
+					FileExtension(id: "pptx", isEnabled: true)
 				]
 			),
 			.video: FileCategory(
 				id: .video,
 				shouldDelete: false,
 				extensions: [
-					FileExtension(name: "mp4", isEnabled: true),
-					FileExtension(name: "mov", isEnabled: true),
-					FileExtension(name: "avi", isEnabled: true),
-					FileExtension(name: "mkv", isEnabled: true),
-					FileExtension(name: "flv", isEnabled: true),
-					FileExtension(name: "wmv", isEnabled: true),
-					FileExtension(name: "webm", isEnabled: true)
+					FileExtension(id: "mp4", isEnabled: true),
+					FileExtension(id: "mov", isEnabled: true),
+					FileExtension(id: "avi", isEnabled: true),
+					FileExtension(id: "mkv", isEnabled: true),
+					FileExtension(id: "flv", isEnabled: true),
+					FileExtension(id: "wmv", isEnabled: true),
+					FileExtension(id: "webm", isEnabled: true)
 				]
 			)
 		]
@@ -120,3 +118,4 @@ class FolderAttribute: ObservableObject, Identifiable, Codable {
 		try container.encode(fileCategories, forKey: .fileCategories)
 	}
 }
+

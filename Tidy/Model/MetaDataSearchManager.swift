@@ -69,7 +69,7 @@ class MetadataSearchManager: ObservableObject {
 		}
 	}
 	// Search for folders in a specific directory that match a search string
-	func searchForFolders(inDirectory directory: URL, matching searchString: String, completion: @escaping ([FolderEntry]) -> Void) {
+	func SearchForFolders(inDirectory directory: URL, matching searchString: String, completion: @escaping ([FolderEntry]) -> Void) {
 		// Stop any previous search
 		if metadataQuery?.isStarted == true {
 			metadataQuery?.stop()
@@ -82,7 +82,7 @@ class MetadataSearchManager: ObservableObject {
 			for url in searchScope {
 				let directoryName = url.lastPathComponent
 				if directoryName.localizedCaseInsensitiveContains(searchString) {
-					searchResult.append(FolderEntry(name: directoryName, path: url.path))
+					searchResult.append(FolderEntry(id: directoryName, path: url.path))
 				}
 			}
 		}
@@ -136,7 +136,7 @@ class MetadataSearchManager: ObservableObject {
 		guard let query = notification.object as? NSMetadataQuery else { return }
 		
 		// Process the search results
-		processResults(from: query)
+		ProcessResults(from: query)
 		
 		// Call the completion handler on the main thread
 		DispatchQueue.main.async {
@@ -148,14 +148,14 @@ class MetadataSearchManager: ObservableObject {
 	}
 	
 	// Process the search results into a usable format
-	private func processResults(from query: NSMetadataQuery) -> Void{
+	private func ProcessResults(from query: NSMetadataQuery) -> Void{
 		// Process each result
 		let resultCount = query.resultCount
 		for i in 0..<resultCount {
 			if let item = query.result(at: i) as? NSMetadataItem {
 				if let path = item.value(forAttribute: NSMetadataItemPathKey) as? String,
 				   let name = item.value(forAttribute: NSMetadataItemDisplayNameKey) as? String {
-					searchResult.append(FolderEntry(name: name, path: path))
+					searchResult.append(FolderEntry(id: name, path: path))
 				}
 			}
 		}

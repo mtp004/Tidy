@@ -10,6 +10,7 @@ import SwiftUI
 enum ViewState {
 	case search
 	case home
+	case setting
 }
 
 struct ContentView: View {
@@ -49,6 +50,21 @@ struct ContentView: View {
 				.buttonStyle(PlainButtonStyle())
 				.padding(5)
 				
+				Button(action: {
+					currentView = .setting
+				}) {
+					Image(systemName: "gearshape.fill")
+						.resizable()
+						.scaledToFit()
+						.frame(width: 24, height: 24)
+						.padding(8)
+						.background(Color.secondary)
+						.foregroundColor(.white)
+						.cornerRadius(10)
+				}
+				.buttonStyle(PlainButtonStyle())
+				.padding(5)
+				
 				Spacer()
 			}
 			.frame(minWidth: 50, maxHeight: .infinity)
@@ -72,9 +88,12 @@ struct ContentView: View {
 			)
 		case .home:
 			MainMenuView(selectedEntry: $selectedEntry)
+		case .setting:
+			SettingsView()
 		}
 	}
 }
+
 
 #Preview {
 	ContentView(

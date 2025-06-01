@@ -2,7 +2,6 @@ import Foundation
 import Cocoa
 
 struct BookmarkManager {
-	// Key for storing bookmarks in UserDefaults
 	private static let bookmarksKey = "SecurityScopedBookmarks"
 	
 	static var homeDirectoryURL: URL? {
@@ -14,7 +13,7 @@ struct BookmarkManager {
 		return nil
 	}
 	
-	static func saveBookmark(for url: URL, withKey key: String) -> Bool {
+	static func SaveBookmark(for url: URL, withKey key: String) -> Bool {
 		do {
 			// Create the bookmark data
 			let bookmarkData = try url.bookmarkData(options: .withSecurityScope,
@@ -33,7 +32,7 @@ struct BookmarkManager {
 		}
 	}
 	
-	static func loadBookmark(withKey key: String, message: String? = nil, directoryOnly: Bool = true) -> URL? {
+	static func LoadBookmark(withKey key: String, message: String? = nil) -> URL? {
 		// Try to load existing bookmark
 		if let bookmarks = UserDefaults.standard.dictionary(forKey: bookmarksKey) as? [String: Data],
 		   let bookmarkData = bookmarks[key] {
@@ -47,20 +46,22 @@ struct BookmarkManager {
 				
 				if isStale {
 					// Bookmark needs to be recreated
-					_ = saveBookmark(for: url, withKey: key)
+					_ = SaveBookmark(for: url, withKey: key)
 				}
 				
 				return url
 			} catch {
 				print("Failed to resolve bookmark for key \(key): \(error)")
-				// Fall through to file picker
 			}
 		}
 		
-		// No bookmark found or failed to resolve, show file picker
+		return OpenFolderDialog(withKey: key, message: message)
+	}
+	
+	static func OpenFolderDialog(withKey key: String, message: String? = nil) -> URL? {
 		let panel = NSOpenPanel()
-		panel.canChooseDirectories = directoryOnly
-		panel.canChooseFiles = !directoryOnly
+		panel.canChooseDirectories = true
+		panel.canChooseFiles = false
 		panel.allowsMultipleSelection = false
 		panel.message = message ?? "Please select a location"
 		panel.directoryURL = homeDirectoryURL
@@ -68,8 +69,7 @@ struct BookmarkManager {
 		let response = panel.runModal()
 		
 		if response == .OK, let url = panel.url {
-			// Save bookmark for future use
-			_ = saveBookmark(for: url, withKey: key)
+			_ = SaveBookmark(for: url, withKey: key)
 			return url
 		}
 		
@@ -77,11 +77,11 @@ struct BookmarkManager {
 	}
 	
 	@discardableResult
-	static func startAccessing(url: URL) -> Bool {
+	static func StartAccessing(url: URL) -> Bool {
 		return url.startAccessingSecurityScopedResource()
 	}
 	
-	static func stopAccessing(url: URL) {
+	static func StopAccessing(url: URL) {
 		url.stopAccessingSecurityScopedResource()
 	}
 }

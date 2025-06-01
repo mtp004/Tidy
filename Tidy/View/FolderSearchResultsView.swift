@@ -34,7 +34,7 @@ struct FolderSearchResultsView: View {
 								},
 								set: { isChecked in
 									if isChecked {
-										let attribute = FolderAttribute(name: item.name, path: item.path)
+										let attribute = FolderAttribute(name: item.id, path: item.path)
 										selectedEntry[item.path] = attribute
 									} else {
 										selectedEntry.removeValue(forKey: item.path)
@@ -63,9 +63,9 @@ struct FolderSearchResultsView: View {
 #Preview {
 	FolderSearchResultsView(
 		searchResults: .constant([
-			FolderEntry(name: "Desktop", path: "/Users/tripham/Desktop"),
-			FolderEntry(name: "Downloads", path: "/Users/tripham/Downloads"),
-			FolderEntry(name: "ProjectX", path: "/Users/tripham/Documents/ProjectX")
+			FolderEntry(id: "Desktop", path: "/Users/tripham/Desktop"),
+			FolderEntry(id: "Downloads", path: "/Users/tripham/Downloads"),
+			FolderEntry(id: "ProjectX", path: "/Users/tripham/Documents/ProjectX")
 		]),
 		isSearching: .constant(false),
 		selectedEntry: .constant([

@@ -39,7 +39,7 @@ struct ExtensionTogglePopoverButton: View {
 					Divider()
 					
 					ForEach(extensionBinding) { $fileExtension in
-						Toggle(fileExtension.name, isOn: $fileExtension.isEnabled)
+						Toggle(fileExtension.id, isOn: $fileExtension.isEnabled)
 					}
 				}
 				.padding()

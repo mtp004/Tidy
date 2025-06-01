@@ -49,7 +49,7 @@ struct SearchView: View {
 					
 						.textFieldStyle(PlainTextFieldStyle())
 						.onChange(of: folderName) { oldValue, newValue in
-							debounceSearch(for: newValue)
+							DebounceSearch(for: newValue)
 						}
 				}
 				.padding(8)
@@ -72,20 +72,20 @@ struct SearchView: View {
 			Spacer()
 		}
 		.onAppear(){
-			searchURL = BookmarkManager.loadBookmark(withKey: "home")
+			searchURL = BookmarkManager.LoadBookmark(withKey: "home")
 			if let searchURL{
-				BookmarkManager.startAccessing(url: searchURL)
+				BookmarkManager.StartAccessing(url: searchURL)
 				searchManager.UpdateSearchURL(url: searchURL)
 			}
 		}
 		.onDisappear(){
 			if let searchURL{
-				BookmarkManager.stopAccessing(url: searchURL)
+				BookmarkManager.StopAccessing(url: searchURL)
 			}
 		}
 	}
 	
-	private func debounceSearch(for input: String) {
+	private func DebounceSearch(for input: String) {
 		// Cancel previous work
 		debounceSearchWorkItem?.cancel()
 		
@@ -95,21 +95,40 @@ struct SearchView: View {
 		}
 		
 		// Schedule new debounced search
-		let workItem = DispatchWorkItem { performSearch() }
+		let workItem = DispatchWorkItem {
+			PerformSearch() }
 		debounceSearchWorkItem = workItem
 		DispatchQueue.main.asyncAfter(deadline: .now() + 0.25, execute: workItem)
 	}
 	
-	private func performSearch() {
+	private func PerformSearch() {
 		isSearching = true
 		guard let searchURL = searchURL else {
 			isSearching = false
 			return
 		}
-		searchManager.searchForFolders(inDirectory: searchURL, matching: folderName) { _ in
+		searchManager.SearchForFolders(inDirectory: searchURL, matching: folderName) { _ in
 			DispatchQueue.main.async {
 				isSearching = false
 			}
+		}
+		
+		//logic for edge case handling the root directory here
+		let targetName = searchURL.lastPathComponent
+		let isMatch: Bool
+
+		if exactMatch {
+			isMatch = caseSensitive
+				? (targetName == folderName)
+				: (targetName.lowercased() == folderName.lowercased())
+		} else {
+			isMatch = caseSensitive
+				? targetName.contains(folderName)
+				: targetName.lowercased().contains(folderName.lowercased())
+		}
+
+		if isMatch {
+			searchManager.searchResult.append(FolderEntry(id: targetName, path: searchURL.path))
 		}
 	}
 }

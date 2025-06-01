@@ -1,51 +1,18 @@
-# Changelog - Tidy App
+# Changelog
 
-## [Unreleased] - 2025-05-25
+## [Unreleased]
 
 ### Added
-- **New FolderAttribute Model**: Introduced  class to replace simple  arrays
- - Added support for file type deletion preferences (images, documents, videos)
- - Implemented  protocol for reactive UI updates
- - Each folder now has configurable deletion settings per file type
-
-- **New FolderAttributeView Component**: Created dedicated view for displaying folder attributes
- - Visual folder icon and path display
- - Interactive toggle buttons for file type deletion settings
- - Color-coded buttons (red when active, gray when inactive)
- - Clean, compact layout with proper text truncation
+- Settings view with root folder configuration
+- Gear icon button in sidebar for settings access
+- Root directory matching in search results
 
 ### Changed
-- **Refactored Data Structure**: Migrated from  array to  dictionary
- - Uses folder path as key for efficient lookups and duplicate prevention
- - Improved data consistency across all views
-
-- **Updated ContentView**: 
- - Changed  binding to  with new dictionary structure
- - Updated preview data to demonstrate new folder attributes functionality
-
-- **Enhanced MainMenuView**:
- - Redesigned to display  components instead of basic 
- - Added smooth animations for folder addition/removal
- - Improved layout with better spacing and visual hierarchy
- - Increased maximum height for folder list (200px → 300px)
-
-- **Improved FolderSearchResultsView**:
- - Simplified toggle logic using dictionary-based selection
- - Removed complex initialization and state management
- - Cleaner folder selection/deselection with automatic  creation
- - Updated preview with realistic sample data
-
-- **Enhanced SearchView**:
- - Updated to work with new dictionary-based folder selection
- - Added null safety check for 
- - Improved preview data with diverse folder attributes
+- Method names to PascalCase ( → , etc.)
+-  and  structs to use uid=501(tripham) gid=20(staff) groups=20(staff),12(everyone),61(localaccounts),79(_appserverusr),80(admin),81(_appserveradm),98(_lpadmin),701(com.apple.sharepoint.group.1),33(_appstore),100(_lpoperator),204(_developer),250(_analyticsusers),395(com.apple.access_ftp),398(com.apple.access_screensharing),399(com.apple.access_ssh),400(com.apple.access_remote_ae) field instead of 
+- Extracted folder dialog into separate  method
 
 ### Removed
-- **Cleaned up FolderEntryView**: Removed unused  state variable
-- **Simplified Architecture**: Eliminated complex state synchronization between multiple selection arrays
-
-### Technical Improvements
-- Better memory management with dictionary-based lookups
-- Reduced code complexity in selection state management
-- Enhanced type safety with structured folder attributes
-- Improved UI responsiveness with  integration
+- Unused code comments
+-  parameter from bookmark methods
+- Redundant  fields in data structures
