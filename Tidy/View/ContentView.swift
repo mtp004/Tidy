@@ -28,9 +28,12 @@ struct ContentView: View {
 						.scaledToFit()
 						.frame(width: 24, height: 24)
 						.padding(8)
-						.background(Color.secondary)
+						.background(currentView == .home
+									? Color.secondary
+									: Color.clear)
 						.foregroundColor(.white)
 						.cornerRadius(10)
+						.contentShape(Rectangle())
 				}
 				.buttonStyle(PlainButtonStyle())
 				.padding(5)
@@ -43,9 +46,12 @@ struct ContentView: View {
 						.scaledToFit()
 						.frame(width: 24, height: 24)
 						.padding(8)
-						.background(Color.secondary)
+						.background(currentView == .search
+									? Color.secondary
+									: Color.clear)
 						.foregroundColor(.white)
 						.cornerRadius(10)
+						.contentShape(Rectangle())
 				}
 				.buttonStyle(PlainButtonStyle())
 				.padding(5)
@@ -58,9 +64,12 @@ struct ContentView: View {
 						.scaledToFit()
 						.frame(width: 24, height: 24)
 						.padding(8)
-						.background(Color.secondary)
+						.background(currentView == .setting
+									? Color.secondary
+									: Color.clear)
 						.foregroundColor(.white)
 						.cornerRadius(10)
+						.contentShape(Rectangle())
 				}
 				.buttonStyle(PlainButtonStyle())
 				.padding(5)
@@ -68,7 +77,7 @@ struct ContentView: View {
 				Spacer()
 			}
 			.frame(minWidth: 50, maxHeight: .infinity)
-			.padding(5)
+			.padding(4)
 			.background(Color.black.opacity(0.1))
 			
 			VStack {

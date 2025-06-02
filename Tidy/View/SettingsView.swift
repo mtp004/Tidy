@@ -16,10 +16,14 @@ struct SettingsView: View {
 				}) {
 					Image(systemName: "folder.fill")
 						.imageScale(.medium)
-						.padding(5)
+						
 						.background(Color.accentColor.opacity(0.1))
 						.clipShape(RoundedRectangle(cornerRadius: 5))
 				}
+				
+				Divider()
+					.frame(height: 20)
+					.background(Color.gray.opacity(0.5))
 				
 				Text(path?.path() ?? "No folder selected")
 					.font(.callout)
@@ -29,13 +33,11 @@ struct SettingsView: View {
 				
 				Spacer()
 			}
-			.background(
+			.padding(5)
+			.background(Color(NSColor.controlBackgroundColor))
+			.overlay(
 				RoundedRectangle(cornerRadius: 5)
-					.stroke(Color.secondary.opacity(0.5))
-					.background(
-						RoundedRectangle(cornerRadius: 5)
-							.fill(Color(NSColor.controlBackgroundColor))
-					)
+					.stroke(Color.gray.opacity(0.4), lineWidth: 2)
 			)
 		}
 		.padding(10)
