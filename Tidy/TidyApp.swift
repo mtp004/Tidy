@@ -14,7 +14,7 @@ struct TidyApp: App {
 	
 	var body: some Scene {
 		Window("Tidy", id: "main") {
-			ContentView(selectedEntry: $appData.folderData)
+			ContentView(selectedEntries: $appData.folderData)
 				.onAppear {
 					DispatchQueue.main.async {
 						if let window = NSApplication.shared.windows.first {

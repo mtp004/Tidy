@@ -15,7 +15,7 @@ enum ViewState {
 
 struct ContentView: View {
 	@State private var currentView: ViewState = .home
-	@Binding var selectedEntry: [String: FolderAttribute]
+	@Binding var selectedEntries: [String: FolderAttribute]
 	
 	var body: some View {
 		HStack {
@@ -93,12 +93,12 @@ struct ContentView: View {
 		switch currentView {
 		case .search:
 			SearchView(
-				selectedEntry: $selectedEntry
+				selectedEntry: $selectedEntries
 			)
 		case .home:
-			MainMenuView(selectedEntry: $selectedEntry)
+			MainMenuView(selectedEntries: $selectedEntries)
 		case .setting:
-			SettingsView()
+			SettingsView(selectedEntries: $selectedEntries)
 		}
 	}
 }
@@ -106,7 +106,7 @@ struct ContentView: View {
 
 #Preview {
 	ContentView(
-		selectedEntry: .constant([
+		selectedEntries: .constant([
 			"/Users/tripham/Desktop": FolderAttribute(name: "Desktop", path: "/Users/tripham/Desktop"),
 			"/Users/tripham/Downloads": FolderAttribute(name: "Downloads", path: "/Users/tripham/Downloads")
 		])
