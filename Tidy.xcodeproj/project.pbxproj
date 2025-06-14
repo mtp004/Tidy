@@ -48,16 +48,6 @@
 			path = Tidy;
 			sourceTree = "<group>";
 		};
-		E573278C2D962B01000B0D04 /* TidyTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = TidyTests;
-			sourceTree = "<group>";
-		};
-		E57327962D962B01000B0D04 /* TidyUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = TidyUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -89,8 +79,6 @@
 			isa = PBXGroup;
 			children = (
 				E57327752D962AFF000B0D04 /* Tidy */,
-				E573278C2D962B01000B0D04 /* TidyTests */,
-				E57327962D962B01000B0D04 /* TidyUITests */,
 				E57327742D962AFF000B0D04 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -143,9 +131,6 @@
 			dependencies = (
 				E573278B2D962B01000B0D04 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				E573278C2D962B01000B0D04 /* TidyTests */,
-			);
 			name = TidyTests;
 			packageProductDependencies = (
 			);
@@ -165,9 +150,6 @@
 			);
 			dependencies = (
 				E57327952D962B01000B0D04 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				E57327962D962B01000B0D04 /* TidyUITests */,
 			);
 			name = TidyUITests;
 			packageProductDependencies = (

@@ -4,20 +4,22 @@ struct SettingsView: View {
 	@Binding var selectedEntries: [String: FolderAttribute]
 	@State private var path: URL? = nil
 	private let key: String = "home"
-
+	
 	var body: some View {
 		VStack(alignment: .leading, spacing: 10) {
 			Text("Root Folder")
 				.font(.title2)
 				.bold()
-
+			
 			HStack(spacing: 10) {
 				Button(action: {
 					if let newPath = BookmarkManager.OpenFolderDialog(withKey: key, message: "Please select a new root folder") {
 						// Compare new path with current
 						if newPath != path {
 							// Different folder selected, clear selected entries
-							selectedEntries.removeAll()
+							selectedEntries = selectedEntries.filter { entry in
+								entry.key.hasPrefix(newPath.path)
+							}
 							path = newPath
 						}
 					}
@@ -27,17 +29,17 @@ struct SettingsView: View {
 						.background(Color.accentColor.opacity(0.1))
 						.clipShape(RoundedRectangle(cornerRadius: 5))
 				}
-
+				
 				Divider()
 					.frame(height: 20)
 					.background(Color.gray.opacity(0.5))
-
+				
 				Text(path?.path() ?? "No folder selected")
 					.font(.callout)
 					.foregroundColor(.secondary)
 					.lineLimit(1)
 					.truncationMode(.middle)
-
+				
 				Spacer()
 			}
 			.padding(5)

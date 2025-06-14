@@ -54,10 +54,12 @@ struct SearchView: View {
 				Toggle("Case sensitive", isOn: $caseSensitive)
 					.onChange(of: caseSensitive){ _, _ in
 						UpdatePredicate()
+						DebounceSearch(for: folderName)
 					}
 				Toggle("Exact match", isOn: $exactMatch)
 					.onChange(of: exactMatch){ _, _ in
 						UpdatePredicate()
+						DebounceSearch(for: folderName)
 					}
 			}
 			.padding(10)
