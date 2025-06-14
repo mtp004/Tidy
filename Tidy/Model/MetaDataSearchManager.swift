@@ -9,7 +9,7 @@ class MetadataSearchManager: ObservableObject {
 	// Optional completion handler that will be called when search finishes
 	private var completionHandler: ((_ results: [FolderEntry]) -> Void)?
 	@Published public var searchResult: [FolderEntry] = [FolderEntry]()
-	private var searchScope: [URL] = [URL]()
+	public var searchScope: [URL] = [URL]()
 	private var excludeScope: [URL] = [URL]()
 	
 	init(){
@@ -77,15 +77,6 @@ class MetadataSearchManager: ObservableObject {
 		// Store the completion handler to call later
 		self.completionHandler = completion
 		self.searchResult.removeAll()
-		
-		if !searchString.isEmpty {
-			for url in searchScope {
-				let directoryName = url.lastPathComponent
-				if directoryName.localizedCaseInsensitiveContains(searchString) {
-					searchResult.append(FolderEntry(id: directoryName, path: url.path))
-				}
-			}
-		}
 		
 		// Configure the search scope with all subdirectories
 		metadataQuery?.searchScopes = searchScope

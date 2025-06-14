@@ -129,25 +129,28 @@ struct SearchView: View {
 			}
 		}
 		
-		let targetName = searchURL.lastPathComponent
+		let topURLs = [searchURL] + searchManager.searchScope
 
-		let isMatch: Bool
-		if caseSensitive {
-			isMatch = exactMatch
-				? targetName == folderName
-				: targetName.contains(folderName)
-		} else {
-			let targetLowercased = targetName.lowercased()
-			let folderLowercased = folderName.lowercased()
-			isMatch = exactMatch
-				? targetLowercased == folderLowercased
-				: targetLowercased.contains(folderLowercased)
+		for url in topURLs {
+			let targetName = url.lastPathComponent
+
+			let isMatch: Bool
+			if caseSensitive {
+				isMatch = exactMatch
+					? targetName == folderName
+					: targetName.contains(folderName)
+			} else {
+				let targetLowercased = targetName.lowercased()
+				let folderLowercased = folderName.lowercased()
+				isMatch = exactMatch
+					? targetLowercased == folderLowercased
+					: targetLowercased.contains(folderLowercased)
+			}
+
+			if isMatch {
+				searchManager.searchResult.append(FolderEntry(id: targetName, path: url.path))
+			}
 		}
-
-		if isMatch {
-			searchManager.searchResult.append(FolderEntry(id: targetName, path: searchURL.path))
-		}
-
 	}
 }
 
